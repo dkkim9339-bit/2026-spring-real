@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>사이트 차단하기 v9.9</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  body { 
+    background: #f5f5f7; color: #1d1d1f; font-family: "Pretendard Variable", Pretendard, sans-serif; 
+    padding: 60px 20px; font-size: 18.5px; letter-spacing: -0.022em; 
+    display: flex; justify-content: center; align-items: flex-start; gap: 0; 
+  }
+
+  .container { width: 540px; background: #ffffff; padding: 40px; border-radius: 30px; box-shadow: 0 8px 40px rgba(0,0,0,0.04); flex-shrink: 0; }
+
+  .timer-side-box-wrapper {
+    width: 0;
+    margin-left: 0;
+    opacity: 0;
+    visibility: hidden;
+    position: sticky; top: 60px;
+    height: auto;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease 0.1s;
+  }
+  .timer-side-box-wrapper.active {
+    width: 360px;
+    margin-left: 30px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .timer-side-box {
+    width: 360px; background: #ffffff; padding: 30px 20px; border-radius: 32px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.06); display: flex; flex-direction: column;
+    align-items: center; border: 1px solid #d2d2d7; box-sizing: border-box;
+    height: auto; 
+  }
+  
+  .timer-header { 
+    display: flex; align-items: center; width: 100%; 
+    padding-bottom: 20px; margin-bottom: 20px; position: relative;
+    border-bottom: none; 
+  }
+  
+  .timer-label { 
+    flex: 1; text-align: center; 
+    font-size: 26.88px; 
+    font-weight: 700; 
+    color: #1d1d1f; margin: 0; letter-spacing: -0.03em; 
+  }
+
+  .header-checkbox-area { 
+    position: absolute; left: 10px; 
+    bottom: -12px; 
+    display: flex; align-items: center; cursor: pointer;
+    font-size: 16.8px; font-weight: 600; color: #1d1d1f; margin: 0;
+  }
+  .cb-large { 
+    width: 20px; height: 20px; 
+    margin: 0 8px 0 0; cursor: pointer; accent-color: #0071e3; 
+  }
+  
+  .clock-list-wrapper { width: 100%; margin-bottom: 20px; padding-right: 2px; }
+  
+  .clock-item { margin-bottom: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; background: #fdfdfd; padding: 15px; border-radius: 24px; border: 1px solid #e5e5ea; box-sizing: border-box; }
+  .clock-header { display: flex; justify-content: flex-start; align-items: center; width: 100%; margin-bottom: 10px; padding-left: 5px; }
+  
+  .clock-name-label { font-size: 17px; font-weight: 700; color: #1d1d1f; cursor: pointer; display: flex; align-items: center; margin: 0; }
+  .clock-name-label input { width: 20px; height: 20px; margin: 0 10px 0 0; cursor: pointer; accent-color: #0071e3; }
+  
+  .clock-time { 
+    font-family: "Pretendard Variable", Pretendard, sans-serif; font-variant-numeric: tabular-nums; 
+    font-size: 33.6px; font-weight: 500; color: #1d1d1f; 
+    background: #f5f5f7; padding: 10px; border-radius: 18px; letter-spacing: 1px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); width: 100%; text-align: center; box-sizing: border-box;
+  }
+
+  .bottom-action-buttons { width: 100%; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+  h2 { font-size: 32px; font-weight: 700; text-align: center; margin: 0 0 35px 0; letter-spacing: -0.03em; }
+  .section { margin-bottom: 24px; width: 100%; } 
+  
+  label { display: block; margin-bottom: 10px; font-size: 18px; color: #86868b; font-weight: 600; }
+  
+  input[type="text"], textarea { 
+    width: 100%; padding: 14px 18px; border-radius: 18px; border: 1px solid #d2d2d7; 
+    background: #f5f5f7; color: #1d1d1f; font-size: 18.5px; box-sizing: border-box; 
+    outline: none; transition: all 0.2s; height: 55px; 
+  }
+  input[type="text"]:focus, textarea:focus { border-color: #0071e3; background: #ffffff; box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1); }
+  
+  button { width: 100%; height: 55px; padding: 0 18px; border-radius: 18px; border: none; font-size: 18.5px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+  button:hover { transform: scale(1.01); }
+  
+  .btn-large-text { font-size: 24.05px !important; font-weight: 700; }
+  .btn-add-text { font-size: 21.6px !important; font-weight: 700; }
+
+  .input-group { display: flex; gap: 9px; align-items: center; margin-bottom: 15px; width: 100%; }
+  .input-group input { width: 100%; }
+  .input-group button { width: 90px; flex-shrink: 0; background: #0071e3; color: white; }
+  
+  .btn-primary { background: #0071e3; color: white; }
+  .btn-red { background: #ff3b30 !important; color: white; }
+  .btn-red:hover { background: #ff453a !important; }
+  .btn-secondary { background: #f5f5f7; color: #0071e3; border: 1px solid #d2d2d7; }
+  .btn-secondary:hover { background: #e2e2e7 !important; color: #0071e3 !important; }
+
+  .status-box { width: 100%; height: 215px; background: #f5f5f7; border: 1px solid #d2d2d7; border-radius: 24px; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; box-sizing: border-box; }
+  .box-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #d2d2d7; }
+  
+  .box-title { font-size: 18px; font-weight: 700; color: #86868b; margin: 0; }
+  
+  .select-all-label { font-size: 16.8px; font-weight: 600; color: #1d1d1f; display: flex; align-items: center; cursor: pointer; margin: 0; }
+  .select-all-label input { width: 18px; height: 18px; margin: 0 8px 0 0; cursor: pointer; accent-color: #0071e3; }
+  
+  .tag-container { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; }
+  .tag { background: #ffffff; padding: 8px 18px; border-radius: 980px; border: 1px solid #d2d2d7; font-size: 16px; display: inline-flex; align-items: center; font-weight: 600; margin: 0; cursor: pointer; }
+  .tag input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; cursor: pointer; accent-color: #0071e3; }
+  
+  .delete-tag-btn { display: inline-flex; align-items: center; justify-content: center; margin-left: 10px; width: 22px; height: 22px; border-radius: 50%; background: #e5f1ff; color: #0071e3; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .delete-tag-btn:hover { background: #0071e3; color: #ffffff; }
+
+  .time-slider-wrapper { background: #f5f5f7; padding: 25px 20px; border-radius: 24px; border: 1px solid #d2d2d7; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+  .time-ruler { display: flex; justify-content: space-between; font-size: 13px; color: #86868b; font-weight: 600; margin-bottom: 10px; }
+  input[type=range] { -webkit-appearance: none; width: 100%; height: 12px; border-radius: 6px; outline: none; background: #e5e5ea; cursor: pointer; margin: 15px 0; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #ffffff; border: 3px solid #0071e3; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: 0.1s; }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); }
+  
+  .time-result { font-weight: 700; color: #1d1d1f; text-align: center; margin-top: 15px; }
+  .time-input-container { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 18px; font-weight: 800; color: #1d1d1f; margin: 0; }
+  .editable-time-val { background: #e5e5ea; color: #0071e3; font-family: "Pretendard Variable", sans-serif; font-size: 20px; font-weight: 800; text-align: center; border: none; border-radius: 12px; padding: 6px 8px; cursor: pointer; transition: 0.2s; outline: none; }
+  .editable-time-val:focus { background: #d2d2d7; box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3); }
+  input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type="number"] { -moz-appearance: textfield; }
+
+  #ampmSelect { width: 75px; text-align: center; }
+  #hourInput { width: 45px; }
+  #minuteInput { width: 55px; }
+
+  .modal { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); align-items: center; justify-content: center; z-index: 9999; }
+  .modal-content { background: #ffffff; padding: 45px 35px; border-radius: 36px; box-shadow: 0 30px 60px rgba(0,0,0,0.12); width: 90%; max-width: 450px; text-align: center; position: relative; max-height: 80vh; overflow-y: auto; }
+  .close-btn { position: absolute; top: 24px; right: 24px; background: #f5f5f7; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color:#1d1d1f; }
+  
+  #targetSentence { background: #f5f5f7; padding: 28px; border-radius: 26px; font-weight: 700; font-size: 1.4rem; margin: 22px 0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>사이트 차단하기</h2>
+  <div class="section">
+    <label>📋 차단할 사이트 등록</label>
+    <div class="input-group">
+      <input type="text" id="urlInput" placeholder="웹사이트 이름이나 URL입력" onkeypress="handleEnter(event)">
+      <button class="btn-primary btn-add-text" onclick="addUrl()">추가</button>
+    </div>
+    
+    <div class="status-box">
+      <div class="box-header">
+        <div class="box-title">차단 후보</div>
+        <label class="select-all-label"><input type="checkbox" id="cbAllCandidate" onchange="toggleSelectAll('candidateBox', this.checked)">전체선택</label>
+      </div>
+      <div id="candidateBox" class="tag-container"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <label>💬 차단 문구 설정</label>
+    <input type="text" id="blanketText" placeholder="화면을 덮을 문구를 입력하세요" style="width: 100%; box-sizing: border-box; margin-bottom: 25px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+      <label style="margin: 0;">⏳ 차단 종료 시각 설정</label>
+    </div>
+    <div class="time-slider-wrapper">
+      <div class="time-ruler">
+        <span>00시</span><span>06시</span><span>12시</span><span>18시</span><span>24시</span><span>+06시</span>
+      </div>
+      <input type="range" id="timeSlider" min="0" max="1800" step="1" value="0">
+      
+      <div id="timeResult" class="time-result">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+          <div class="time-input-container">
+            <select id="ampmSelect" class="editable-time-val">
+              <option value="AM">오전</option>
+              <option value="PM">오후</option>
+            </select>
+            <input type="number" id="hourInput" class="editable-time-val" min="1" max="12" value="12">
+            <span>시</span>
+            <input type="number" id="minuteInput" class="editable-time-val" min="0" max="59" value="00">
+            <span>분</span>
+          </div>
+          <span id="dayIndicator" style="font-weight: 800; font-size: 15px; color: #ff3b30;"></span>
+          <span style="font-size: 18px; font-weight: 800; color: #1d1d1f;">까지</span>
+        </div>
+        
+        <div style="margin-top: 12px; font-size: 20.8px; color: #86868b; font-weight: 600;">
+          (총 <span id="displayDuration" style="color: #0071e3; font-weight: 800; font-size: 23.4px;">-시간 -분</span> 차단)
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <button onclick="startFocus()" class="btn-primary btn-large-text" style="margin-top: 25px;">차단 시작</button>
+</div>
+
+<div id="timerWrapper" class="timer-side-box-wrapper">
+  <div class="timer-side-box">
+    <div class="timer-header">
+      <label class="header-checkbox-area">
+        <input type="checkbox" id="cbAllActive" class="cb-large" onchange="toggleSelectAll('clockContainer', this.checked)">전체선택
+      </label>
+      <span class="timer-label">남은 시간</span>
+    </div>
+    
+    <div id="clockContainer" class="clock-list-wrapper"></div>
+
+    <div class="bottom-action-buttons">
+      <button onclick="openChallenge()" class="btn-red">⚠ 선택한 사이트 긴급 해제</button>
+      <button onclick="openSettingsModal()" class="btn-secondary">⚙️ 해제 문장 설정</button>
+    </div>
+  </div>
+</div>
+
+<div id="settingsModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeSettingsModal()">&times;</button>
+    <h3 style="margin-top:0; font-size: 24px; text-align: center;">해제 문장 설정</h3>
+    <div id="stepInputs" style="margin-top:18px; text-align:left; width: 100%;"></div>
+    <button onclick="addStepInput()" style="width: 44px; height: 44px; border-radius: 50%; background: #f5f5f7; color: #0071e3; margin: 20px auto 10px auto; padding: 0; display: flex; align-items: center; justify-content: center;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+    <button onclick="saveSettings()" class="btn-primary" style="margin-top: 18px;">설정 저장</button>
+  </div>
+</div>
+
+<div id="unlockModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeChallenge()">&times;</button>
+    <h3 style="color:#1d1d1f; margin-top:0; font-size: 24px;">긴급 해제 (<span id="sn">1</span>/<span id="totalSteps">1</span>)</h3>
+    <div id="targetSentence"></div>
+    <input type="text" id="ti" placeholder="똑같이 입력 후 엔터!" autocomplete="off" style="width: 100%; box-sizing: border-box; text-align: center;">
+  </div>
+</div>
+
+<script>
+let cur = 0; let sens = [];
+let isFirstLoad = true; 
+let lastCnamesArray = []; 
+
+const timeSlider = document.getElementById('timeSlider');
+const ampmSelect = document.getElementById('ampmSelect');
+const hourInput = document.getElementById('hourInput');
+const minuteInput = document.getElementById('minuteInput');
+const displayDuration = document.getElementById('displayDuration');
+const dayIndicator = document.getElementById('dayIndicator');
+
+function handleEnter(e) {
+  if (e.key === 'Enter' || e.keyCode === 13) {
+    addUrl();
+  }
+}
+
+function updateTimeUI() {
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  if (parseInt(timeSlider.value) <= nowMins) timeSlider.value = nowMins + 10;
+  const selectedMins = parseInt(timeSlider.value);
+  const diffMins = selectedMins - nowMins;
+  let displayH = Math.floor(selectedMins / 60);
+  const displayM = selectedMins % 60;
+  let dayStr = "";
+  let calcH = displayH;
+  if (displayH >= 24) { calcH -= 24; dayStr = "(내일)"; }
+  const ampm = calcH >= 12 ? "PM" : "AM";
+  let hour12 = calcH % 12;
+  if (hour12 === 0) hour12 = 12;
+  ampmSelect.value = ampm;
+  hourInput.value = hour12;
+  minuteInput.value = displayM.toString().padStart(2, '0');
+  dayIndicator.innerText = dayStr;
+  const diffH = Math.floor(diffMins / 60); const diffM = diffMins % 60;
+  let diffStr = "";
+  if (diffH > 0) diffStr += `${diffH}시간 `;
+  if (diffM > 0) diffStr += `${diffM}분`;
+  displayDuration.innerText = diffStr;
+  const maxVal = parseInt(timeSlider.max);
+  const pastPercent = (nowMins / maxVal) * 100; const selPercent = (selectedMins / maxVal) * 100;
+  timeSlider.style.background = `linear-gradient(to right, #d2d2d7 ${pastPercent}%, #0071e3 ${pastPercent}%, #0071e3 ${selPercent}%, #e5e5ea ${selPercent}%)`;
+}
+
+function syncInputsToSlider() {
+  let ampm = ampmSelect.value;
+  let h = parseInt(hourInput.value) || 12;
+  let m = parseInt(minuteInput.value) || 0;
+  if (h < 1) h = 1; if (h > 12) h = 12;
+  if (m < 0) m = 0; if (m > 59) m = 59;
+  hourInput.value = h;
+  minuteInput.value = m.toString().padStart(2, '0');
+  let h24 = h;
+  if (ampm === "AM" && h === 12) h24 = 0; 
+  if (ampm === "PM" && h < 12) h24 = h + 12; 
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  let targetMins = h24 * 60 + m;
+  if (targetMins <= nowMins) targetMins += 1440;
+  if (targetMins > 1800) targetMins = 1800;
+  timeSlider.value = targetMins;
+  updateTimeUI();
+}
+
+ampmSelect.addEventListener('change', syncInputsToSlider);
+hourInput.addEventListener('change', syncInputsToSlider);
+minuteInput.addEventListener('change', syncInputsToSlider);
+hourInput.addEventListener('focus', function() { this.select(); });
+minuteInput.addEventListener('focus', function() { this.select(); });
+timeSlider.addEventListener('input', updateTimeUI);
+setInterval(updateTimeUI, 60000); 
+const _now = new Date();
+timeSlider.value = _now.getHours() * 60 + _now.getMinutes() + 60;
+updateTimeUI();
+
+function openSettingsModal() { document.getElementById('settingsModal').style.display = 'flex'; }
+function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
+function closeChallenge() { document.getElementById('unlockModal').style.display = 'none'; }
+
+function appendInputHTML(container, num, val) {
+  container.insertAdjacentHTML('beforeend', `
+    <div class="step-row" style="margin-top:15px; width: 100%; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <label class="step-label" style="font-size:13px; color:#86868b; margin:0;">${num}번 문장</label>
+        <button onclick="this.closest('.step-row').remove(); updateStepLabels();" style="width: auto; height: auto; padding: 4px 8px; border-radius: 6px; background: transparent; color: #ff3b30; font-size: 13px;">✕ 삭제</button>
+      </div>
+      <input type="text" class="step-val" value="${val}" placeholder="문장을 입력하세요" style="width: 100%; box-sizing: border-box;">
+    </div>
+  `);
+}
+
+function updateStepLabels() { document.querySelectorAll('.step-row').forEach((row, index) => { row.querySelector('.step-label').innerText = `${index + 1}번 문장`; }); }
+function addStepInput() { appendInputHTML(document.getElementById('stepInputs'), document.querySelectorAll('.step-row').length + 1, ""); }
+function renderStepInputs(savedSens = []) {
+  const container = document.getElementById('stepInputs'); container.innerHTML = '';
+  const count = Math.max(savedSens.length, 1); 
+  for(let i=0; i<count; i++) appendInputHTML(container, i + 1, savedSens[i] || "");
+}
+
+async function saveSettings() {
+  const stepVals = Array.from(document.querySelectorAll('.step-val')).map(i => i.value).filter(val => val.trim() !== "");
+  await fetch('http://localhost:5000/api/settings', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ emergency_sentences: stepVals }) });
+  alert("해제 문장이 성공적으로 저장되었습니다!"); closeSettingsModal(); load(); 
+}
+
+function updateSelectAllState() {
+  const cBoxes = document.querySelectorAll('#candidateBox .site-cb');
+  const cbC = document.getElementById('cbAllCandidate');
+  if(cbC) {
+    cbC.disabled = cBoxes.length === 0; 
+    cbC.checked = cBoxes.length > 0 && Array.from(cBoxes).every(cb => cb.checked);
+  }
+  const aBoxes = document.querySelectorAll('#clockContainer .active-cb');
+  const cbA = document.getElementById('cbAllActive');
+  if(cbA) {
+    cbA.disabled = aBoxes.length === 0; 
+    cbA.checked = aBoxes.length > 0 && Array.from(aBoxes).every(cb => cb.checked);
+  }
+}
+
+document.addEventListener('change', function(e) { 
+  if (e.target && (e.target.classList.contains('site-cb') || e.target.classList.contains('active-cb'))) updateSelectAllState(); 
+});
+
+function toggleSelectAll(boxId, isChecked) {
+  const cbs = document.getElementById(boxId).querySelectorAll(boxId === 'candidateBox' ? '.site-cb' : '.active-cb');
+  cbs.forEach(cb => cb.checked = isChecked);
+  updateSelectAllState(); 
+}
+
+async function deleteSite(name, event) {
+  event.preventDefault(); event.stopPropagation(); 
+  await fetch('http://localhost:5000/api/delete_site', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ target: name }) });
+  lastCandidateStr = ""; load();
+}
+
+let lastCandidateStr = "", lastActiveStr = "", lastSensStr = "", isFetching = false;
+
+async function load() {
+  if (isFetching) return; isFetching = true;
+  try {
+    const r = await fetch('http://localhost:5000/api/settings'); const s = await r.json();
+    if(!s.candidate_groups && !s.active_groups) return;
+    const now = Date.now() / 1000;
+    sens = s.emergency_sentences || [];
+    const cNames = Object.keys(s.candidate_groups || {}).sort(); 
+    const aNames = Object.keys(s.active_groups || {}).sort();
+    const cStr = JSON.stringify(cNames); const aStr = JSON.stringify(aNames);
+    let clockHTML = "";
+    let hasActiveTimer = false;
+    const checkedActives = Array.from(document.querySelectorAll('#clockContainer .active-cb:checked')).map(cb => cb.value);
+    
+    aNames.forEach(n => {
+      const endTime = (s.active_groups[n] && s.active_groups[n].end_time) ? s.active_groups[n].end_time : 0;
+      const diff = endTime - now;
+      if (diff > 0) {
+        hasActiveTimer = true;
+        const h = Math.floor(diff/3600).toString().padStart(2,'0');
+        const m = Math.floor((diff%3600)/60).toString().padStart(2,'0');
+        const s_rem = Math.floor(diff%60).toString().padStart(2,'0');
+        clockHTML += `
+          <div class="clock-item">
+            <div class="clock-header">
+              <label class="clock-name-label">
+                <input type="checkbox" class="active-cb" value="${n}" ${checkedActives.includes(n) ? 'checked' : ''}>
+                ${n}
+              </label>
+            </div>
+            <div class="clock-time">${h}:${m}:${s_rem}</div>
+          </div>`;
+      }
+    });
+
+    const timerWrapper = document.getElementById('timerWrapper');
+    if (hasActiveTimer) {
+      document.getElementById('clockContainer').innerHTML = clockHTML;
+      timerWrapper.classList.add('active');
+    } else {
+      timerWrapper.classList.remove('active');
+      document.getElementById('clockContainer').innerHTML = "";
+    }
+
+    let newNames = [];
+    if (!isFirstLoad) {
+        newNames = cNames.filter(n => !lastCnamesArray.includes(n));
+    }
+    lastCnamesArray = cNames;
+
+    if (lastCandidateStr !== cStr) {
+      let checkedCands = Array.from(document.querySelectorAll('#candidateBox .site-cb:checked')).map(cb => cb.value);
+      
+      newNames.forEach(n => {
+          if (!checkedCands.includes(n)) checkedCands.push(n);
+      });
+
+      document.getElementById('candidateBox').innerHTML = cNames.map(name => 
+        `<label class="tag"><input type="checkbox" class="site-cb" value="${name}" ${checkedCands.includes(name) ? 'checked' : ''}>${name}<span class="delete-tag-btn" onclick="deleteSite('${name}', event)">✕</span></label>`
+      ).join('');
+      lastCandidateStr = cStr; 
+    }
+    
+    updateSelectAllState();
+    isFirstLoad = false;
+
+    const blanketInput = document.getElementById('blanketText');
+    if (document.activeElement !== blanketInput && blanketInput.value !== (s.blanket_text || "")) blanketInput.value = s.blanket_text || "";
+    const sensStr = JSON.stringify(sens);
+    if (document.getElementById('settingsModal').style.display !== 'flex' && lastSensStr !== sensStr) {
+      renderStepInputs(sens); lastSensStr = sensStr;
+    }
+  } catch (e) { console.error("통신 에러:", e); } finally { isFetching = false; }
+}
+
+async function addUrl() {
+  const v = document.getElementById('urlInput').value;
+  if(!v.trim()) return;
+  await fetch('http://localhost:5000/api/settings', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:v}) });
+  document.getElementById('urlInput').value=''; load();
+}
+
+async function startFocus() {
+  const selectedCandidates = Array.from(document.querySelectorAll('#candidateBox .site-cb:checked')).map(cb => cb.value);
+  if (selectedCandidates.length === 0) return alert("차단 후보에서 차단 시작할 사이트를 체크해주세요!");
+  const now = new Date();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  const selectedMins = parseInt(timeSlider.value);
+  const durationHours = (selectedMins - nowMins) / 60; 
+  const stepVals = Array.from(document.querySelectorAll('.step-val')).map(i => i.value).filter(val => val.trim() !== "");
+  await fetch('http://localhost:5000/api/settings', { 
+    method:'POST', headers:{'Content-Type':'application/json'}, 
+    body:JSON.stringify({ blanket_text: document.getElementById('blanketText').value, duration: durationHours, emergency_sentences: stepVals, targets: selectedCandidates }) 
+  });
+  
+  alert("차단 시작"); load();
+}
+
+async function openChallenge() {
+  await load(); 
+  const selectedActives = document.querySelectorAll('#clockContainer .active-cb:checked');
+  if (selectedActives.length === 0) return alert("시계 위 체크박스에서 해제할 항목을 먼저 선택해주세요!");
+  if(sens.length === 0) return alert("설정된 해제 문구가 없습니다.");
+  cur = 0; document.getElementById('totalSteps').innerText = sens.length;
+  document.getElementById('unlockModal').style.display = 'flex'; showStep();
+}
+
+function showStep() {
+  if(cur >= sens.length) { finish(); return; }
+  document.getElementById('sn').innerText = cur + 1;
+  document.getElementById('targetSentence').innerText = sens[cur];
+  document.getElementById('ti').value = ''; document.getElementById('ti').focus();
+}
+
+document.getElementById('ti').addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') {
+    if (document.getElementById('ti').value.trim() === sens[cur].trim()) { cur++; showStep(); }
+    else { alert("틀렸다 다시 써라"); }
+  }
+});
+
+async function finish() { 
+  const selected = Array.from(document.querySelectorAll('#clockContainer .active-cb:checked')).map(cb => cb.value);
+  await fetch('http://localhost:5000/api/unlock', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({targets: selected}) }); 
+  alert("필요한 일만 하고 다시 차단하자"); location.reload(); 
+}
+
+setInterval(load, 1000); load();
+</script>
+</body>
+</html>
