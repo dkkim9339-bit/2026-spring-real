@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARDROBE Ultimate V33 (Typography Unified)</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; 
+            margin: 0; display: flex; height: 100vh; 
+            background-color: #312f2f; 
+            color: #f4f4f5; 
+            overflow: hidden; 
+        }
+
+        /* 로그인 오버레이 */
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #312f2f; z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .login-box { background: #252424; padding: 60px 40px; border-radius: 16px; border: 1px solid #bf98a0; box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; }
+        .login-title { color: #bf98a0; font-size: 32px; font-weight: 900; letter-spacing: 8px; margin: 0 0 10px 0; }
+        .login-desc { color: #a89f9e; font-size: 14px; margin-bottom: 40px; }
+        
+        .login-input-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        .login-input-group input { padding: 16px; border: 1px solid #454242; border-radius: 8px; font-size: 18px; background: #1e1d1d; color: #ffffff; text-align: center; font-family: inherit; transition: all 0.2s; }
+        .login-input-group input:focus { outline: none; border-color: #bf98a0; box-shadow: 0 0 0 1px #bf98a0; }
+        
+        .login-btn { background-color: #bf98a0; color: #111111; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 800; font-family: inherit; cursor: pointer; width: 100%; transition: all 0.2s; }
+        .login-btn:hover { opacity: 0.8; }
+
+        /* 왼쪽 사이드바 (카테고리) */
+        .sidebar { width: 200px; background-color: #252424; border-right: 1px solid #454242; padding: 40px 0 0 0; display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; position: relative; }
+        .sidebar h2 { text-align: center; font-size: 14px; color: #a89f9e; margin-bottom: 30px; letter-spacing: 3px; font-weight: 700; }
+        
+        .menu-wrapper { display: flex; flex-direction: column; position: relative; }
+        .menu-item { padding: 16px 20px; cursor: pointer; color: #a89f9e; font-size: 15px; font-weight: 500; transition: all 0.2s ease; position: relative; z-index: 2; }
+        .menu-item.active { font-weight: 800; color: #ffffff; background-color: #1e1d1d; border-left: 3px solid #bf98a0; }
+        .menu-item:hover { color: #ffffff; background-color: #1e1d1d; }
+
+        .sub-menu { display: flex; opacity: 0; visibility: hidden; transform: translateX(-10px); transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); position: absolute; left: 100%; top: 0; width: 180px; background-color: #252424; border: 1px solid #454242; border-left: 3px solid #bf98a0; flex-direction: column; box-shadow: 10px 10px 30px rgba(0,0,0,0.3); border-radius: 0 8px 8px 0; z-index: 100; padding: 0; max-height: 80vh; overflow-y: auto; }
+        .sub-menu:empty { display: none !important; }
+        .menu-wrapper:hover .sub-menu { opacity: 1; visibility: visible; transform: translateX(0); }
+        .sub-menu-item { padding: 12px 16px; font-size: 13px; color: #a89f9e; cursor: pointer; border-bottom: 1px solid #363434; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s; }
+        .sub-menu-item:hover { background-color: #1e1d1d; color: #bf98a0; padding-left: 20px; } 
+
+        .logout-btn { margin-top: auto; margin-bottom: 20px; background: none; border: none; color: #6b6666; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; padding: 15px 20px 10px 5px; transition: color 0.2s; }
+        .logout-btn:hover { color: #ef4444; }
+
+        /* 오른쪽 영역 (정보 입력/기록) */
+        .content { flex-grow: 1; height: 100vh; overflow-y: auto; background-color: #312f2f; padding: 0 40px; scroll-behavior: smooth; }
+        .category-section { padding-bottom: 40px; display: flex; flex-direction: column; align-items: center; }
+        
+        .section-divider { width: 100%; max-width: 900px; height: 2px; background: linear-gradient(90deg, transparent, #5a5555, transparent); margin: 80px auto 0 auto; }
+        .category-hero { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 900px; padding: 40px 0 40px 0; font-size: 36px; font-weight: 900; color: #bf98a0; letter-spacing: 5px; text-transform: uppercase; scroll-margin-top: 40px; }
+
+        .form-container { background: #252424; padding: 40px; border-radius: 16px; margin-bottom: 30px; flex-shrink: 0; display: flex; flex-direction: column; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; z-index: 2; }
+        .category-section .input-form-box { border: 1px solid #bf98a0; }
+        .saved-record-container { border: 1px solid #454242; background: #252424; z-index: 1; scroll-margin-top: 40px; position: relative; }
+        .saved-record-container input, .saved-record-container textarea { background-color: #1e1d1d; color: #f4f4f5; pointer-events: none; border-color: #454242; }
+
+        .layout-top-row { display: flex; gap: 24px; margin-bottom: 24px; width: 100%; }
+        .layout-top-row > * { flex: 1; position: relative; }
+        .layout-bottom-row { display: flex; gap: 40px; align-items: stretch; width: 100%; }
+        
+        .left-col { width: 260px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .image-preview { width: 100%; flex-grow: 1; border: 1px dashed #454242; border-radius: 12px; background: #111111; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #a89f9e; font-size: 14px; overflow: hidden; position: relative; cursor: pointer; transition: all 0.2s; min-height: 280px; }
+        .image-preview:hover { border-color: #bf98a0; color: #bf98a0; }
+        .image-preview img { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; top:0; left:0; }
+        .image-input { display: none; }
+
+        .right-col { flex-grow: 1; display: flex; flex-direction: column; }
+        .right-col-top { margin-bottom: 12px; }
+        .right-col-bottom { flex-grow: 1; display: flex; flex-direction: column; }
+        .right-col-bottom label { font-weight: 600; margin-bottom: 10px; font-size: 19px; color: #a89f9e; }
+        .right-col-bottom textarea { flex-grow: 1; resize: none; margin: 0; } 
+        
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { -moz-appearance: textfield; }
+
+        input[type="text"], input[type="number"], textarea { padding: 16px; border: 1px solid #454242; border-radius: 8px; width: 100%; font-size: 18px; background: #1e1d1d; color: #ffffff; font-family: inherit; transition: all 0.2s; }
+        input:focus, textarea:focus { outline: none; border-color: #bf98a0; box-shadow: 0 0 0 1px #bf98a0; }
+        input::placeholder, textarea::placeholder { color: #555555; }
+
+        .size-select-btn { padding: 16px; border: 1px solid #454242; background: #1e1d1d; border-radius: 8px; cursor: pointer; text-align: left; font-size: 18px; color: #555555; font-family: inherit; transition: all 0.2s; width: 100%; }
+        .size-select-btn:hover { border-color: #bf98a0; color: #bf98a0; }
+        
+        .size-popup { display: none; position: absolute; top: 100%; left: 0; width: 100%; min-width: 250px; background: #252424; border: 1px solid #454242; border-radius: 8px; padding: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 100; margin-top: 8px; flex-direction: column; gap: 8px; }
+        .size-popup.show { display: flex; }
+        .size-row { display: flex; gap: 6px; }
+        .size-item { flex: 1; padding: 12px 0; border: 1px solid #454242; background: #1e1d1d; color: #a89f9e; text-align: center; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s; }
+        .size-item:hover { background: #bf98a0; color: #111111; border-color: #bf98a0; }
+        .custom-size-btn { background: #bf98a0; color: #111111; border-color: #bf98a0; }
+        .custom-size-input { display: none; padding: 12px; border: 1px solid #bf98a0; border-radius: 6px; font-size: 15px; text-align: center; font-weight: 700; background: #1e1d1d; color: #ffffff; }
+        .custom-size-input.show { display: block; flex: 1; }
+
+        .measure-table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 6px 0; text-align: center; margin: 0; }
+        .measure-table th { color: #a89f9e; font-size: 19px; font-weight: 600; padding: 0 0 12px 0; }
+        .measure-table td { padding: 0; }
+        .measure-table input { width: 100%; text-align: center; padding: 14px 8px; font-size: 17px; background: #1e1d1d; border: 1px solid #454242; border-radius: 8px; color: #ffffff; }
+        .measure-table input:focus { border-color: #bf98a0; }
+        
+        .saved-measure-table th { color: #bf98a0; }
+        .saved-measure-table td { background-color: #bf98a0; color: #111111; font-size: 17px; font-weight: 900; padding: 14px 8px; border-radius: 8px; }
+
+        .submit-btn-wrapper { display: flex; justify-content: flex-end; margin-top: 25px; }
+        .submit-btn { background-color: #bf98a0; color: #111111; border: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 800; font-family: inherit; transition: all 0.2s; }
+        .submit-btn:hover { opacity: 0.8; }
+        
+        .delete-btn-x { position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #6b6666; font-size: 28px; line-height: 1; font-weight: 400; cursor: pointer; transition: color 0.2s; z-index: 10; padding: 0; margin: 0; }
+        .delete-btn-x:hover { color: #ef4444; }
+
+        .record-list { display: flex; flex-direction: column; width: 100%; max-width: 900px; }
+
+        @keyframes slideDownFade { 0% { opacity: 0; transform: translateY(-50px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .animate-slide-down { animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-box">
+            <h1 class="login-title">WARDROBE</h1>
+            <p class="login-desc">이름과 4자리 비밀번호로 나만의 옷장을 여세요</p>
+            <div class="login-input-group">
+                <input type="text" id="login-name" placeholder="이름" autocomplete="off">
+                <input type="password" id="login-pin" placeholder="비밀번호 4자리" maxlength="4">
+            </div>
+            <button class="login-btn" onclick="handleLogin()">내 옷장 열기</button>
+        </div>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <h2>WARDROBE</h2>
+        <button class="logout-btn" onclick="location.reload()">로그아웃 (계정 전환)</button>
+    </aside>
+
+    <main class="content" id="main-content"></main>
+
+    <script>
+        const categories = [
+            { id: 'heavy', name: 'Heavy Outer', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'outer', name: 'Outer', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'top', name: 'Top', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'bottom', name: 'Bottom', measures: ['총장', '허리단면', '엉덩이단면', '허벅지단면', '밑위', '밑단단면'] },
+            { id: 'shoes', name: 'Shoes', measures: ['굽높이', '발볼', '전체높이'] },
+            { id: 'acc', name: 'Accessory', measures: ['가로', '세로', '두께'] }
+        ];
+
+        let currentUserKey = null;
+        let userData = []; 
+
+        const row1 = ['S', 'M', 'L', 'XL'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
+        const row2 = ['0', '1', '2', '3'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
+        const row2_5 = ['95', '100', '105', '110'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
+        const row3 = ['44', '46', '48', '50', '52'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
+        
+        const sizePopupHtml = `
+            <div class="size-row">${row1}</div>
+            <div class="size-row">${row2}</div>
+            <div class="size-row">${row2_5}</div>
+            <div class="size-row">${row3}</div>
+            <div class="size-row" style="margin-top: 4px;">
+                <div class="size-item custom-size-btn" onclick="toggleCustomSize(this)">직접 입력</div>
+                <input type="text" class="custom-size-input" placeholder="입력 후 엔터" onkeypress="handleCustomInput(event, this)">
+            </div>
+        `;
+
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        
+        categories.forEach((cat, index) => {
+            const menuWrapper = document.createElement('div');
+            menuWrapper.className = 'menu-wrapper';
+            menuWrapper.innerHTML = `
+                <div id="menu-${cat.id}" class="menu-item" onclick="scrollToElement('sec-${cat.id}-hero', 'start')">${cat.name}</div>
+                <div id="submenu-${cat.id}" class="sub-menu"></div>
+            `;
+            sidebar.insertBefore(menuWrapper, sidebar.querySelector('.logout-btn'));
+
+            const section = document.createElement('section');
+            section.className = 'category-section';
+            section.id = `sec-${cat.id}`;
+            section.dataset.menuId = `menu-${cat.id}`;
+
+            let measureHeadersHtml = '';
+            let measureInputsHtml = '';
+            cat.measures.forEach(m => {
+                measureHeadersHtml += `<th>${m}</th>`;
+                measureInputsHtml += `<td><input type="number" class="measure-input" data-label="${m}" placeholder="0"></td>`;
+            });
+            let measureTableHtml = `
+                <div class="measure-table-wrapper">
+                    <table class="measure-table">
+                        <thead><tr>${measureHeadersHtml}</tr></thead>
+                        <tbody><tr>${measureInputsHtml}</tr></tbody>
+                    </table>
+                </div>
+            `;
+
+            section.innerHTML = `
+                <div class="category-hero" id="sec-${cat.id}-hero">${cat.name}</div>
+                <div class="form-container input-form-box">
+                    
+                    <div class="layout-top-row">
+                        <div><input type="text" class="clothBrand" placeholder="브랜드"></div>
+                        <div><input type="text" class="clothName" placeholder="옷 이름"></div>
+                        <div>
+                            <button type="button" class="size-select-btn" onclick="togglePopup(this)">착용 사이즈 선택 ▼</button>
+                            <div class="size-popup">${sizePopupHtml}</div>
+                            <input type="hidden" class="selectedSize">
+                        </div>
+                    </div>
+
+                    <div class="layout-bottom-row">
+                        <div class="left-col">
+                            <div class="image-preview" onclick="this.nextElementSibling.click()">
+                                <span>➕ 사진 추가</span><img src="" alt="미리보기">
+                            </div>
+                            <input type="file" class="image-input" accept="image/*" onchange="previewImage(this)">
+                        </div>
+                        <div class="right-col">
+                            <div class="right-col-top">${measureTableHtml}</div>
+                            <div class="right-col-bottom">
+                                <label>전체적인 느낌</label>
+                                <textarea class="overallReview" placeholder="보온성, 무게감, 핏감 등을 자유롭게 적어주세요."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="submit-btn-wrapper">
+                        <button class="submit-btn" onclick="processSaveRecord(this, '${cat.id}')">기록 저장하기</button>
+                    </div>
+                </div>
+                <div class="record-list" id="list-${cat.id}"></div>
+            `;
+            
+            mainContent.appendChild(section);
+
+            if (index < categories.length - 1) {
+                const divider = document.createElement('div');
+                divider.className = 'section-divider';
+                mainContent.appendChild(divider);
+            }
+        });
+
+        function handleLogin() {
+            const name = document.getElementById('login-name').value.trim();
+            const pin = document.getElementById('login-pin').value.trim();
+            if(!name) { alert('이름을 입력해주세요!'); return; }
+            if(pin.length !== 4 || isNaN(pin)) { alert('비밀번호는 숫자 4자리여야 합니다!'); return; }
+            currentUserKey = 'wardrobeUser_' + name + '_' + pin;
+            const savedStr = localStorage.getItem(currentUserKey);
+            userData = savedStr ? JSON.parse(savedStr) : [];
+            document.getElementById('login-overlay').style.display = 'none';
+            renderAllSavedData();
+        }
+
+        function renderAllSavedData() {
+            [...userData].reverse().forEach(record => buildRecordCard(record, false));
+        }
+
+        function buildRecordCard(record, isNewAdd = false) {
+            let savedMeasureHeadersHtml = '';
+            let savedMeasureValuesHtml = '';
+            record.measures.forEach(m => { 
+                savedMeasureHeadersHtml += `<th>${m.label}</th>`;
+                savedMeasureValuesHtml += `<td>${m.value || '-'}</td>`;
+            });
+            let savedMeasureTableHtml = `
+                <div class="measure-table-wrapper">
+                    <table class="measure-table saved-measure-table">
+                        <thead><tr>${savedMeasureHeadersHtml}</tr></thead>
+                        <tbody><tr>${savedMeasureValuesHtml}</tr></tbody>
+                    </table>
+                </div>
+            `;
+
+            const wrapper = document.createElement('div');
+            if(isNewAdd) {
+                wrapper.style.overflow = 'hidden';
+                wrapper.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+                wrapper.style.maxHeight = '0px'; 
+                wrapper.style.opacity = '0';
+                wrapper.style.transform = 'translateY(-30px)'; 
+            }
+
+            const recordCard = document.createElement('div');
+            recordCard.className = 'form-container saved-record-container';
+            recordCard.id = record.id;
+            
+            // ★ 브랜드, 옷 이름, 사이즈 모두 폰트 크기 29px로 통일 및 색상 모두 하얀색(#ffffff)
+            const brandHtml = record.brand ? `<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.brand}</span>&nbsp;` : '';
+            
+            recordCard.innerHTML = `
+                <button class="delete-btn-x" onclick="processDeleteRecord('${record.id}')">&times;</button>
+                
+                <div class="saved-card-header" style="color: #ffffff; margin-bottom: 20px; padding-left: 5px; line-height: 1.2;">
+                    ${brandHtml}<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.name}</span>&nbsp;<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.size}</span>
+                </div>
+
+                <div class="layout-bottom-row">
+                    <div class="left-col">
+                        <div class="image-preview" style="cursor: default; border: 1px solid #454242; background-color: #111111;">
+                            <img src="${record.imgSrc}" alt="옷 사진" style="display: ${record.imgSrc ? 'block' : 'none'}; width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+                    <div class="right-col">
+                        <div class="right-col-top">${savedMeasureTableHtml}</div>
+                        <div class="right-col-bottom">
+                            <label>전체적인 느낌</label>
+                            <textarea readonly>${record.review || '-'}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            wrapper.appendChild(recordCard);
+            document.getElementById(`list-${record.catId}`).prepend(wrapper);
+
+            const subMenu = document.getElementById(`submenu-${record.catId}`);
+            if(subMenu) {
+                const subMenuItem = document.createElement('div');
+                subMenuItem.className = 'sub-menu-item';
+                subMenuItem.id = `menu-link-${record.id}`; 
+                subMenuItem.innerText = record.name; 
+                subMenuItem.onclick = (e) => { e.stopPropagation(); scrollToElement(record.id, 'center'); };
+                subMenu.prepend(subMenuItem);
+            }
+
+            if(isNewAdd) {
+                void wrapper.offsetWidth; 
+                wrapper.style.maxHeight = '1500px';
+                wrapper.style.opacity = '1';
+                wrapper.style.transform = 'translateY(0)';
+                wrapper.style.marginBottom = '30px'; 
+                setTimeout(() => { wrapper.style.maxHeight = 'none'; wrapper.style.overflow = 'visible'; }, 500);
+            }
+        }
+
+        function processSaveRecord(btn, catId) {
+            const section = btn.closest('.category-section');
+            const brand = section.querySelector('.clothBrand').value;
+            const name = section.querySelector('.clothName').value;
+            const size = section.querySelector('.selectedSize').value;
+            const overallReview = section.querySelector('.overallReview').value;
+            const imgInput = section.querySelector('.image-input');
+            const imgSrc = imgInput.dataset.imgData || '';
+            if(!name || !size) { alert('옷 이름과 착용 사이즈는 꼭 입력해주세요!'); return; }
+            const measureInputs = section.querySelectorAll('.measure-input');
+            let measuresArray = [];
+            measureInputs.forEach(input => measuresArray.push({ label: input.dataset.label, value: input.value }));
+            const newRecord = { id: 'record-' + Date.now(), catId: catId, brand: brand, name: name, size: size, imgSrc: imgSrc, measures: measuresArray, review: overallReview };
+            userData.push(newRecord);
+            localStorage.setItem(currentUserKey, JSON.stringify(userData));
+            const inputFormBox = section.querySelector('.input-form-box');
+            inputFormBox.style.pointerEvents = 'none'; 
+            inputFormBox.style.transition = 'all 0.35s ease-in';
+            inputFormBox.style.transform = 'translateY(100px) scale(0.95)';
+            inputFormBox.style.opacity = '0';
+            setTimeout(() => {
+                buildRecordCard(newRecord, true); 
+                section.querySelector('.clothBrand').value = '';
+                section.querySelector('.clothName').value = ''; 
+                section.querySelector('.overallReview').value = '';
+                section.querySelector('.selectedSize').value = '';
+                measureInputs.forEach(input => input.value = '');
+                const sizeBtn = section.querySelector('.size-select-btn');
+                sizeBtn.innerText = '착용 사이즈 선택 ▼'; sizeBtn.style.color = '#555555';
+                imgInput.value = ''; delete imgInput.dataset.imgData;
+                const previewImg = section.querySelector('.image-preview img');
+                const previewSpan = section.querySelector('.image-preview span');
+                previewImg.src = ''; previewImg.style.display = 'none';
+                previewSpan.style.display = 'block';
+                inputFormBox.style.transition = 'none';
+                inputFormBox.style.transform = 'translateY(-50px) scale(0.98)'; 
+                void inputFormBox.offsetWidth;
+                inputFormBox.style.transition = 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+                inputFormBox.style.transform = 'translateY(0) scale(1)';
+                inputFormBox.style.opacity = '1';
+                inputFormBox.style.pointerEvents = 'auto'; 
+            }, 350); 
+        }
+
+        function processDeleteRecord(recordId) {
+            if(confirm('삭제하시겠습니까?')) {
+                userData = userData.filter(rec => rec.id !== recordId);
+                localStorage.setItem(currentUserKey, JSON.stringify(userData));
+                const recordEl = document.getElementById(recordId);
+                if(recordEl) {
+                    const wrapper = recordEl.parentElement;
+                    wrapper.style.transition = 'all 0.4s';
+                    wrapper.style.opacity = '0';
+                    wrapper.style.maxHeight = '0px'; 
+                    setTimeout(() => wrapper.remove(), 400);
+                }
+                const menuEl = document.getElementById('menu-link-' + recordId);
+                if(menuEl) menuEl.remove();
+            }
+        }
+
+        function scrollToElement(targetId, blockPos = 'start') {
+            const el = document.getElementById(targetId);
+            if(el) el.scrollIntoView({ behavior: 'smooth', block: blockPos });
+        }
+
+        function togglePopup(btn) {
+            const popup = btn.nextElementSibling;
+            document.querySelectorAll('.size-popup').forEach(p => { if(p !== popup) p.classList.remove('show'); });
+            popup.classList.toggle('show');
+        }
+
+        function selectSize(element, size) {
+            const popup = element.closest('.size-popup');
+            const btn = popup.previousElementSibling;
+            const hiddenInput = popup.nextElementSibling;
+            btn.innerText = `[ ${size} ] 선택됨`;
+            btn.style.color = '#ffffff'; // 선택된 텍스트도 하얀색
+            hiddenInput.value = size;
+            popup.classList.remove('show');
+            const customInput = popup.querySelector('.custom-size-input');
+            if(customInput) customInput.classList.remove('show');
+        }
+
+        function toggleCustomSize(btn) {
+            const input = btn.nextElementSibling;
+            btn.style.display = 'none';
+            input.classList.add('show');
+            input.focus();
+        }
+
+        function handleCustomInput(e, input) {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                if(input.value.trim() !== '') selectSize(input, input.value.trim());
+            }
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewBox = input.previousElementSibling;
+                    const img = previewBox.querySelector('img');
+                    const text = previewBox.querySelector('span');
+                    img.src = e.target.result; img.style.display = 'block'; text.style.display = 'none';
+                    input.dataset.imgData = e.target.result; 
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
