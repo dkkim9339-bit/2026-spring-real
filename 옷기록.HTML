@@ -3,452 +3,942 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WARDROBE Ultimate V33 (Typography Unified)</title>
+    <title>WARDROBE Ultimate V57 (Layout Overflow Fixed)</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <style>
         * { box-sizing: border-box; }
+        
         body { 
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif; 
-            margin: 0; display: flex; height: 100vh; 
-            background-color: #312f2f; 
-            color: #f4f4f5; 
-            overflow: hidden; 
+            --bg-main: #B6BACB; 
+            --bg-box: #c4c8d9; 
+            --bg-input: #d5d9ea; 
+            --bg-darker: #aeb2c5; 
+            --color-point: #303152; 
+            --text-main: #303152; 
+            --text-sub: #5c5e82; 
+            --text-placeholder: #888aae; 
+            --border-main: #aeb2c5; 
+            --border-dark: #9195a6; 
+            font-family: 'Pretendard', sans-serif; margin: 0; display: flex; height: 100vh; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; position: relative; 
         }
 
-        /* 로그인 오버레이 */
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #312f2f; z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: #252424; padding: 60px 40px; border-radius: 16px; border: 1px solid #bf98a0; box-shadow: 0 20px 50px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; }
-        .login-title { color: #bf98a0; font-size: 32px; font-weight: 900; letter-spacing: 8px; margin: 0 0 10px 0; }
-        .login-desc { color: #a89f9e; font-size: 14px; margin-bottom: 40px; }
-        
-        .login-input-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
-        .login-input-group input { padding: 16px; border: 1px solid #454242; border-radius: 8px; font-size: 18px; background: #1e1d1d; color: #ffffff; text-align: center; font-family: inherit; transition: all 0.2s; }
-        .login-input-group input:focus { outline: none; border-color: #bf98a0; box-shadow: 0 0 0 1px #bf98a0; }
-        
-        .login-btn { background-color: #bf98a0; color: #111111; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 800; font-family: inherit; cursor: pointer; width: 100%; transition: all 0.2s; }
-        .login-btn:hover { opacity: 0.8; }
+        body, .sidebar, .content, .form-container, .login-box, .login-overlay, .sub-menu, .size-popup, .global-fit-popup,
+        input, textarea, .measure-chip, .size-item, .fit-btn, .submit-btn, .size-select-btn,
+        .menu-item, .sub-menu-item, .category-hero, .inline-fit-label, .fit-text, .val-text,
+        .analysis-select, .analysis-result-title { transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease; }
 
-        /* 왼쪽 사이드바 (카테고리) */
-        .sidebar { width: 200px; background-color: #252424; border-right: 1px solid #454242; padding: 40px 0 0 0; display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; position: relative; }
-        .sidebar h2 { text-align: center; font-size: 14px; color: #a89f9e; margin-bottom: 30px; letter-spacing: 3px; font-weight: 700; }
         
-        .menu-wrapper { display: flex; flex-direction: column; position: relative; }
-        .menu-item { padding: 16px 20px; cursor: pointer; color: #a89f9e; font-size: 15px; font-weight: 500; transition: all 0.2s ease; position: relative; z-index: 2; }
-        .menu-item.active { font-weight: 800; color: #ffffff; background-color: #1e1d1d; border-left: 3px solid #bf98a0; }
-        .menu-item:hover { color: #ffffff; background-color: #1e1d1d; }
+        
+        
+        
+        
+        
+        
 
-        .sub-menu { display: flex; opacity: 0; visibility: hidden; transform: translateX(-10px); transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1); position: absolute; left: 100%; top: 0; width: 180px; background-color: #252424; border: 1px solid #454242; border-left: 3px solid #bf98a0; flex-direction: column; box-shadow: 10px 10px 30px rgba(0,0,0,0.3); border-radius: 0 8px 8px 0; z-index: 100; padding: 0; max-height: 80vh; overflow-y: auto; }
-        .sub-menu:empty { display: none !important; }
+        .sidebar { width: 200px; background-color: var(--bg-box); border-right: 1px solid var(--border-main); padding: 40px 0 0 0; display: flex; flex-direction: column; z-index: 50; flex-shrink: 0; position: relative; }
+        .sidebar h2 { text-align: center; font-size: 14px; color: var(--text-sub); margin-bottom: 30px; letter-spacing: 3px; font-weight: 700; white-space: nowrap; }
+        .menu-item { padding: 16px 20px; cursor: pointer; color: var(--text-sub); font-size: 15px; font-weight: 500; position: relative; white-space: nowrap; }
+        .menu-item.active { font-weight: 800; color: var(--text-main); background-color: var(--bg-input); border-left: 3px solid var(--color-point); }
+        .menu-item:hover { color: var(--text-main); background-color: var(--bg-input); }
+        .sub-menu { display: flex; opacity: 0; visibility: hidden; transform: translateX(-10px); position: absolute; left: 100%; top: 0; width: 180px; background-color: var(--bg-box); border: 1px solid var(--border-main); border-left: 3px solid var(--color-point); flex-direction: column; border-radius: 0 12px 12px 0; z-index: 100; padding: 0; max-height: 80vh; overflow-y: auto; box-shadow: 5px 5px 20px rgba(0,0,0,0.2); }
         .menu-wrapper:hover .sub-menu { opacity: 1; visibility: visible; transform: translateX(0); }
-        .sub-menu-item { padding: 12px 16px; font-size: 13px; color: #a89f9e; cursor: pointer; border-bottom: 1px solid #363434; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: all 0.2s; }
-        .sub-menu-item:hover { background-color: #1e1d1d; color: #bf98a0; padding-left: 20px; } 
+        .sub-menu-item { padding: 12px 16px; font-size: 13px; color: var(--text-sub); cursor: pointer; border-bottom: 1px solid var(--border-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sub-menu-item:hover { background-color: var(--bg-input); color: var(--color-point); padding-left: 20px; }
 
-        .logout-btn { margin-top: auto; margin-bottom: 20px; background: none; border: none; color: #6b6666; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; padding: 15px 20px 10px 5px; transition: color 0.2s; }
+        .backup-group { margin-top: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .backup-btn { background: none; border: 1px solid var(--border-main); color: var(--text-placeholder); font-size: 11px; padding: 8px; border-radius: 8px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+        .backup-btn:hover { border-color: var(--color-point); color: var(--color-point); }
+        .logout-btn { background: none; border: none; color: var(--text-placeholder); cursor: pointer; font-size: 13px; font-weight: 600; padding: 15px 20px; text-align: left; white-space: nowrap; }
         .logout-btn:hover { color: #ef4444; }
 
-        /* 오른쪽 영역 (정보 입력/기록) */
-        .content { flex-grow: 1; height: 100vh; overflow-y: auto; background-color: #312f2f; padding: 0 40px; scroll-behavior: smooth; }
-        .category-section { padding-bottom: 40px; display: flex; flex-direction: column; align-items: center; }
+        .content { flex-grow: 1; height: 100vh; overflow-y: auto; overflow-x: hidden; background-color: var(--bg-main); padding: 0 40px; scroll-behavior: smooth; position: relative; z-index: 10; }
         
-        .section-divider { width: 100%; max-width: 900px; height: 2px; background: linear-gradient(90deg, transparent, #5a5555, transparent); margin: 80px auto 0 auto; }
-        .category-hero { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 900px; padding: 40px 0 40px 0; font-size: 36px; font-weight: 900; color: #bf98a0; letter-spacing: 5px; text-transform: uppercase; scroll-margin-top: 40px; }
+        .category-section { padding-bottom: 40px; display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .section-divider { width: 100%; max-width: 900px; height: 2px; background: linear-gradient(90deg, transparent, var(--border-main), transparent); margin: 80px auto 0 auto; opacity: 0.5; }
+        .category-hero { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 900px; padding: 40px 0 30px 0; font-size: 35px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; scroll-margin-top: 40px; white-space: nowrap; }
 
-        .form-container { background: #252424; padding: 40px; border-radius: 16px; margin-bottom: 30px; flex-shrink: 0; display: flex; flex-direction: column; width: 100%; max-width: 900px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative; z-index: 2; }
-        .category-section .input-form-box { border: 1px solid #bf98a0; }
-        .saved-record-container { border: 1px solid #454242; background: #252424; z-index: 1; scroll-margin-top: 40px; position: relative; }
-        .saved-record-container input, .saved-record-container textarea { background-color: #1e1d1d; color: #f4f4f5; pointer-events: none; border-color: #454242; }
-
-        .layout-top-row { display: flex; gap: 24px; margin-bottom: 24px; width: 100%; }
-        .layout-top-row > * { flex: 1; position: relative; }
-        .layout-bottom-row { display: flex; gap: 40px; align-items: stretch; width: 100%; }
+        .form-container { background: var(--bg-box); padding: 30px; border-radius: 24px; border: none; margin-bottom: 30px; display: flex; flex-direction: column; width: 100%; max-width: 900px; min-width: 500px; position: relative; z-index: 2; transition: transform 0.3s ease; box-shadow: 0 8px 20px rgba(0,0,0,0.1); zoom: 1.2; }
         
-        .left-col { width: 260px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .image-preview { width: 100%; flex-grow: 1; border: 1px dashed #454242; border-radius: 12px; background: #111111; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #a89f9e; font-size: 14px; overflow: hidden; position: relative; cursor: pointer; transition: all 0.2s; min-height: 280px; }
-        .image-preview:hover { border-color: #bf98a0; color: #bf98a0; }
-        .image-preview img { width: 100%; height: 100%; object-fit: cover; display: none; position: absolute; top:0; left:0; }
-        .image-input { display: none; }
-
-        .right-col { flex-grow: 1; display: flex; flex-direction: column; }
-        .right-col-top { margin-bottom: 12px; }
+        .saved-record-container { 
+            max-width: 1000px !important; 
+            padding: 24px !important; 
+            border-radius: 20px; 
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            scroll-margin-top: 40px; 
+            position: relative; 
+            z-index: 1; 
+        }
+        
+        
+        .layout-top-row { display: flex; gap: 24px; margin-bottom: 24px; width: 100%; flex-wrap: wrap; }
+        .layout-top-row > * { flex: 1 1 120px; position: relative; min-width: 120px; }
+        
+        .layout-bottom-row { display: flex; gap: 20px; align-items: stretch; width: 100%; flex-wrap: wrap; }
+        
+        /* 💡 수정됨: margin-bottom 제거하고 right-col 자체에 gap:15px 부여하여 높이 충돌 방지 */
+        .left-col { width: 210px; flex: 0 0 210px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .right-col { flex: 1 1 250px; display: flex; flex-direction: column; gap: 15px; min-width: 250px; }
+        .right-col-top { width: 100%; } 
         .right-col-bottom { flex-grow: 1; display: flex; flex-direction: column; }
-        .right-col-bottom label { font-weight: 600; margin-bottom: 10px; font-size: 19px; color: #a89f9e; }
-        .right-col-bottom textarea { flex-grow: 1; resize: none; margin: 0; } 
         
-        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type="number"] { -moz-appearance: textfield; }
+        .saved-record-container .left-col { width: 150px !important; flex: 0 0 150px !important; }
+        .saved-record-container .layout-bottom-row { gap: 16px; }
 
-        input[type="text"], input[type="number"], textarea { padding: 16px; border: 1px solid #454242; border-radius: 8px; width: 100%; font-size: 18px; background: #1e1d1d; color: #ffffff; font-family: inherit; transition: all 0.2s; }
-        input:focus, textarea:focus { outline: none; border-color: #bf98a0; box-shadow: 0 0 0 1px #bf98a0; }
-        input::placeholder, textarea::placeholder { color: #555555; }
-
-        .size-select-btn { padding: 16px; border: 1px solid #454242; background: #1e1d1d; border-radius: 8px; cursor: pointer; text-align: left; font-size: 18px; color: #555555; font-family: inherit; transition: all 0.2s; width: 100%; }
-        .size-select-btn:hover { border-color: #bf98a0; color: #bf98a0; }
+        .floating-input-group { position: relative; display: flex; align-items: center; width: 100%; }
+        .floating-input-group input { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 18px; background: var(--bg-input); color: var(--text-main); font-family: inherit; transition: 0.3s; outline: none; }
         
-        .size-popup { display: none; position: absolute; top: 100%; left: 0; width: 100%; min-width: 250px; background: #252424; border: 1px solid #454242; border-radius: 8px; padding: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); z-index: 100; margin-top: 8px; flex-direction: column; gap: 8px; }
-        .size-popup.show { display: flex; }
-        .size-row { display: flex; gap: 6px; }
-        .size-item { flex: 1; padding: 12px 0; border: 1px solid #454242; background: #1e1d1d; color: #a89f9e; text-align: center; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 700; transition: all 0.2s; }
-        .size-item:hover { background: #bf98a0; color: #111111; border-color: #bf98a0; }
-        .custom-size-btn { background: #bf98a0; color: #111111; border-color: #bf98a0; }
-        .custom-size-input { display: none; padding: 12px; border: 1px solid #bf98a0; border-radius: 6px; font-size: 15px; text-align: center; font-weight: 700; background: #1e1d1d; color: #ffffff; }
-        .custom-size-input.show { display: block; flex: 1; }
-
-        .measure-table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 6px 0; text-align: center; margin: 0; }
-        .measure-table th { color: #a89f9e; font-size: 19px; font-weight: 600; padding: 0 0 12px 0; }
-        .measure-table td { padding: 0; }
-        .measure-table input { width: 100%; text-align: center; padding: 14px 8px; font-size: 17px; background: #1e1d1d; border: 1px solid #454242; border-radius: 8px; color: #ffffff; }
-        .measure-table input:focus { border-color: #bf98a0; }
+        /* 💡 수정됨: height:100% 삭제하고 최소 높이 지정 후 부모 요소의 플렉스(stretch)에 맡김 */
+        .floating-input-group textarea { 
+            width: 100%; 
+            padding: 24px 16px 16px 16px; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            background: var(--bg-input); 
+            color: var(--text-main); 
+            font-family: inherit; 
+            transition: 0.3s; 
+            outline: none; 
+            resize: none; 
+            min-height: 120px; 
+            box-sizing: border-box; 
+        }
         
-        .saved-measure-table th { color: #bf98a0; }
-        .saved-measure-table td { background-color: #bf98a0; color: #111111; font-size: 17px; font-weight: 900; padding: 14px 8px; border-radius: 8px; }
+        .saved-record-container .floating-input-group textarea { font-size: 15px; padding: 20px 12px 12px 12px; }
+        
+        .floating-input-group input:focus, .floating-input-group textarea:focus { box-shadow: 0 0 0 1.5px var(--color-point); }
+        
+        .floating-input-group label { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-placeholder); pointer-events: none; transition: 0.2s ease all; font-weight: 600; font-size: 16px; white-space: nowrap; }
+        
+        .floating-input-group textarea + label { top: 34px; }
+        .saved-record-container .floating-input-group textarea + label { top: 28px; font-size: 14px; }
+        
+        .floating-input-group input:focus + label, .floating-input-group input:not(:placeholder-shown) + label,
+        .floating-input-group textarea:focus + label, .floating-input-group textarea:not(:placeholder-shown) + label { top: 0 !important; font-size: 12px !important; color: var(--color-point); background: var(--bg-box); padding: 0 6px; transform: translateY(-50%); border-radius: 4px; }
+
+        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; display: none !important; }
+        input[type="number"] { -moz-appearance: textfield !important; appearance: none !important; }
+
+        .size-select-btn { padding: 16px; border: none; background: var(--bg-input); border-radius: 12px; cursor: pointer; text-align: left; font-size: 18px; font-family: inherit; width: 100%; color: var(--text-placeholder); font-weight: 600; transition: 0.3s; white-space: nowrap; }
+        .size-select-btn:hover { box-shadow: 0 0 0 1px var(--color-point); }
+
+        .measure-grid { display: grid; width: 100%; gap: 10px; }
+        .measure-grid.grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .measure-grid.grid-6 { grid-template-columns: repeat(6, 1fr); }
+        .measure-grid.grid-default { grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); }
+        
+        .right-col { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .review-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-box); border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; display: flex; flex-direction: column; padding: 12px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 10; }
+        .right-col:hover .review-overlay { opacity: 1; pointer-events: auto; }
+        .review-overlay-content { width: 100%; height: 100%; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 14px; outline: none; resize: none; overflow-y: auto; text-align: left; }
+        .review-overlay-label { font-size: 11px; color: var(--text-sub); font-weight: 800; margin-bottom: 6px; }
+        .measure-chip { flex: 1 1 0%; min-width: 65px; background: var(--bg-input); border: none; border-radius: 12px; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.2s; }
+        .measure-chip:focus-within { box-shadow: 0 0 0 1.5px var(--color-point); transform: translateY(-2px); }
+        .chip-label { font-size: 12px; color: var(--text-sub); font-weight: 700; white-space: nowrap; }
+        .measure-chip input { width: 100%; min-width: 0; border: none; background: transparent; text-align: center; font-size: 18px; color: var(--text-main); font-weight: 800; padding: 0; outline: none; }
+        .inline-fit-label { font-size: 12px; color: var(--color-point); font-weight: 800; min-height: 15px; white-space: nowrap; }
+
+        .saved-record-container .measure-chip { padding: 8px 4px; border-radius: 10px; gap: 4px; }
+        .saved-record-container .chip-label { font-size: 11px; }
+        
+        .measure-chip.saved-chip { background: var(--bg-darker); }
+        .measure-chip.saved-chip .chip-label { color: var(--text-main); opacity: 0.8; }
+        .measure-chip.saved-chip .val-text { font-size: 18px; font-weight: 900; color: var(--color-point); margin: 2px 0; display: block; white-space: nowrap; }
+        .saved-record-container .val-text { font-size: 16px; margin: 0px 0; }
+        
+        .measure-chip.saved-chip .fit-text { font-size: 11px; font-weight: 700; background: var(--bg-box); color: var(--color-point); padding: 4px 6px; border-radius: 6px; display: inline-block; white-space: nowrap; }
+        .saved-record-container .fit-text { font-size: 10px; padding: 2px 5px; }
 
         .submit-btn-wrapper { display: flex; justify-content: flex-end; margin-top: 25px; }
-        .submit-btn { background-color: #bf98a0; color: #111111; border: none; padding: 16px 40px; border-radius: 8px; font-size: 16px; cursor: pointer; font-weight: 800; font-family: inherit; transition: all 0.2s; }
-        .submit-btn:hover { opacity: 0.8; }
-        
-        .delete-btn-x { position: absolute; top: 8px; right: 8px; background: transparent; border: none; color: #6b6666; font-size: 28px; line-height: 1; font-weight: 400; cursor: pointer; transition: color 0.2s; z-index: 10; padding: 0; margin: 0; }
+        .submit-btn { background-color: var(--color-point); color: var(--bg-main); border: none; padding: 14px 36px; border-radius: 12px; font-size: 16px; cursor: pointer; font-weight: 800; transition: transform 0.2s; white-space: nowrap; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .delete-btn-x { position: absolute; top: 12px; right: 16px; background: transparent; border: none; color: var(--text-placeholder); font-size: 28px; cursor: pointer; transition: color 0.2s; padding: 0; line-height: 1; }
         .delete-btn-x:hover { color: #ef4444; }
 
-        .record-list { display: flex; flex-direction: column; width: 100%; max-width: 900px; }
+        .global-fit-popup { display: none; position: fixed; background: var(--bg-box); border: none; padding: 16px 20px; border-radius: 16px; z-index: 9999; flex-direction: column; align-items: center; gap: 12px; width: max-content; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .global-fit-popup.show { display: flex; animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fit-btn { padding: 10px 14px; border-radius: 10px; border: none; background: var(--bg-input); color: var(--text-sub); cursor: pointer; font-size: 14px; font-weight: 600; transition: 0.2s; white-space: nowrap; }
+        .fit-btn:hover { box-shadow: 0 0 0 1px var(--color-point); color: var(--text-main); }
+        .fit-btn.selected { background: var(--color-point); color: var(--bg-main); font-weight: 900; }
+        
+        .size-popup { display: none; position: absolute; background: var(--bg-box); top: 100%; left: 0; width: 100%; min-width: 250px; border: none; border-radius: 12px; padding: 16px; z-index: 100; margin-top: 8px; flex-direction: column; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .size-popup.show { display: flex; }
+        .size-item { flex: 1; padding: 12px 0; border: none; background: var(--bg-input); color: var(--text-sub); text-align: center; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; transition: 0.2s; white-space: nowrap; }
+        .size-item:hover { background: var(--color-point); color: var(--bg-main); }
 
-        @keyframes slideDownFade { 0% { opacity: 0; transform: translateY(-50px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        .animate-slide-down { animation: slideDownFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .image-preview { width: 100%; flex-grow: 1; border: 1.5px dashed var(--border-dark); border-radius: 16px; background: var(--bg-darker); display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; min-height: 140px; transition: border-color 0.3s; }
+        .saved-record-container .image-preview { min-height: 120px; border-radius: 12px; border: none; }
+        
+        .image-preview:hover { border-color: var(--color-point); }
+        .image-preview img { width: 100%; height: auto; object-fit: contain; border-radius: inherit; display: none; position: relative; }
+        
+        .highlight-match { border: 2px solid var(--color-point) !important; transform: scale(1.05); z-index: 2; }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(10px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        
+        .record-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; width: 100%; max-width: 1200px; justify-items: center; margin: 0 auto; margin-top: -10px; }
+        .record-list > .saved-record-container { margin-bottom: 0 !important; height: 100%; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
 
+                @media (max-width: 950px) {
+            .sidebar { width: 150px; }
+            .content { padding: 0 20px; }
+            .form-container, .saved-record-container { padding: 20px !important; min-width: auto; }
+            
+            .layout-top-row { flex-direction: column; gap: 16px; }
+            .layout-bottom-row { flex-direction: column; gap: 20px; }
+            .saved-record-container .layout-bottom-row { flex-direction: row !important; gap: 15px !important; align-items: stretch !important; }
+            
+            .left-col { width: 100% !important; flex: none; }
+            .saved-record-container .left-col { width: 150px !important; flex: 0 0 150px !important; }
+            .image-preview { min-height: 130px; }
+            .saved-record-container .image-preview { min-height: 110px; }
+            
+            .measure-chip { min-width: 45%; }
+            .record-list { grid-template-columns: 1fr; }
+            #sec-search .form-container { flex-direction: column !important; }
+            #sec-search .search-cat-item { display: inline-block; margin-right: 5px; }
+            #sec-search div[style*="flex: 0 0 150px"] { border-right: none !important; border-bottom: 1px solid var(--border-main); padding-right: 0 !important; padding-bottom: 15px; flex-direction: row !important; overflow-x: auto; width: 100%; white-space: nowrap; flex: none !important; }
+        }
     </style>
+
+<style>
+.saved-record-container .image-preview {
+    min-height: auto !important;
+    height: auto !important;
+}
+.saved-record-container .image-preview img {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+}
+</style>
+<style>.saved-record-container { width: 100%; max-width: 550px !important; }</style><style>.measure-grid.grid-6 .measure-chip { min-width: 0 !important; }</style>
+<style>
+/* Make the right col stretch out its contents */
+.saved-record-container .right-col {
+    display: flex;
+    flex-direction: column;
+}
+/* By default, center the grid vertically if it's 1 row (like grid-4) */
+.saved-record-container .measure-grid {
+    height: 100%;
+    align-content: center;
+}
+/* For grid-6, use 2 rows of 3, and push them to the top and bottom edges */
+.saved-record-container .measure-grid.grid-6 {
+    grid-template-columns: repeat(3, 1fr) !important;
+    align-content: space-between !important;
+}
+</style>
 </head>
 <body>
 
-    <div id="login-overlay" class="login-overlay">
-        <div class="login-box">
-            <h1 class="login-title">WARDROBE</h1>
-            <p class="login-desc">이름과 4자리 비밀번호로 나만의 옷장을 여세요</p>
-            <div class="login-input-group">
-                <input type="text" id="login-name" placeholder="이름" autocomplete="off">
-                <input type="password" id="login-pin" placeholder="비밀번호 4자리" maxlength="4">
-            </div>
-            <button class="login-btn" onclick="handleLogin()">내 옷장 열기</button>
-        </div>
+    <div style="position: fixed; top: 20px; right: 40px; z-index: 1000; display: flex; align-items: center; background: var(--bg-box); border-radius: 12px; padding: 8px 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <span style="margin-right: 8px;">🔍</span>
+        <input type="text" id="global-name-search" placeholder="옷 이름/브랜드 검색" style="border: none; background: transparent; font-size: 15px; font-family: inherit; color: var(--text-main); outline: none; width: 150px;" oninput="runGlobalNameSearch()">
     </div>
+
+
+    <div id="global-fit-popup" class="global-fit-popup"><div class="fit-popup-title" style="font-weight:700; font-size:14px;">치수 어땠어요?</div><div class="fit-btn-group" id="fit-btn-group" style="display:flex; gap:8px;"></div></div>
 
     <aside class="sidebar" id="sidebar">
         <h2>WARDROBE</h2>
-        <button class="logout-btn" onclick="location.reload()">로그아웃 (계정 전환)</button>
+        <div class="menu-item" onclick="scrollToElement('sec-search-hero', 'start')" style="margin-top:auto; font-weight:700;">🔍 치수 검색</div>
+        <div class="backup-group">
+            <button class="backup-btn" onclick="exportData()">📦 데이터 파일로 백업</button>
+            <button class="backup-btn" onclick="document.getElementById('import-file').click()">📂 백업 파일 불러오기</button>
+            <input type="file" id="import-file" style="display:none" onchange="importData(event)">
+        </div>
     </aside>
 
     <main class="content" id="main-content"></main>
 
     <script>
-        const categories = [
-            { id: 'heavy', name: 'Heavy Outer', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
-            { id: 'outer', name: 'Outer', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
-            { id: 'top', name: 'Top', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
-            { id: 'bottom', name: 'Bottom', measures: ['총장', '허리단면', '엉덩이단면', '허벅지단면', '밑위', '밑단단면'] },
-            { id: 'shoes', name: 'Shoes', measures: ['굽높이', '발볼', '전체높이'] },
-            { id: 'acc', name: 'Accessory', measures: ['가로', '세로', '두께'] }
-        ];
+
+        const DB_NAME = 'WardrobeDB';
+        const STORE_NAME = 'records';
+
+        function getDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if(!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME);
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function idbGet(key) {
+            try {
+                const db = await getDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const req = tx.objectStore(STORE_NAME).get(key);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            } catch(e) { return null; }
+        }
+
+        async function idbSet(key, val) {
+            try {
+                const db = await getDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readwrite');
+                    const req = tx.objectStore(STORE_NAME).put(val, key);
+                    req.onsuccess = () => resolve();
+                    req.onerror = () => reject(req.error);
+                });
+            } catch(e) { console.error("IDB Save Error:", e); }
+        }
 
         let currentUserKey = null;
         let userData = []; 
+        let activeMeasureInput = null;
 
-        const row1 = ['S', 'M', 'L', 'XL'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
-        const row2 = ['0', '1', '2', '3'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
-        const row2_5 = ['95', '100', '105', '110'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
-        const row3 = ['44', '46', '48', '50', '52'].map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('');
         
-        const sizePopupHtml = `
-            <div class="size-row">${row1}</div>
-            <div class="size-row">${row2}</div>
-            <div class="size-row">${row2_5}</div>
-            <div class="size-row">${row3}</div>
-            <div class="size-row" style="margin-top: 4px;">
-                <div class="size-item custom-size-btn" onclick="toggleCustomSize(this)">직접 입력</div>
-                <input type="text" class="custom-size-input" placeholder="입력 후 엔터" onkeypress="handleCustomInput(event, this)">
-            </div>
-        `;
+        window.runGlobalNameSearch = function() {
+            const query = document.getElementById('global-name-search').value.toLowerCase();
+            document.querySelectorAll('.record-list .saved-record-container').forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        };
+
+        
+        window.triggerPaste = async function(btn) {
+            try {
+                const items = await navigator.clipboard.read();
+                for (const item of items) {
+                    if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+                        const blob = await item.getType(item.types.find(t => t.startsWith('image/')));
+                        const file = new File([blob], "pasted.png", {type: blob.type});
+                        const input = btn.closest('.left-col').querySelector('.image-input');
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        input.files = dataTransfer.files;
+                        previewImage(input);
+                        return;
+                    }
+                }
+                alert('클립보드에 이미지가 없습니다!');
+            } catch (err) {
+                alert('붙여넣기 권한이 없거나 지원되지 않습니다. 이미지 박스에 마우스를 올리고 Ctrl+V 를 눌러보세요.');
+            }
+        };
+
+        document.addEventListener('paste', e => {
+            const items = e.clipboardData.items;
+            let imageItem = null;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    imageItem = items[i];
+                    break;
+                }
+            }
+            if (imageItem) {
+                const file = imageItem.getAsFile();
+                
+                // Find which category section is currently visible on the screen
+                const sections = document.querySelectorAll('.category-section');
+                let targetInput = null;
+                
+                // Usually the user hovers over or is interacting with a specific section
+                const hoveredPreview = document.querySelector('.image-preview:hover');
+                if (hoveredPreview && !hoveredPreview.closest('.saved-record-container')) {
+                    targetInput = hoveredPreview.nextElementSibling;
+                } else {
+                    // Fallback to the first open section with an empty image? Or just the first section.
+                    // This is naive but works if they just opened the app
+                    targetInput = document.querySelector('.image-input');
+                }
+                
+                if (targetInput) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    targetInput.files = dataTransfer.files;
+                    previewImage(targetInput);
+                }
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            currentUserKey = 'wardrobe_default_user';
+            let mergedData = [];
+            let oldKeys = [];
+            
+            // 1. Read from localStorage for migration
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('wardrobe_') && key !== 'wardrobe_active_user' && key !== 'wardrobe_default_user') {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (Array.isArray(data)) {
+                            mergedData = mergedData.concat(data);
+                            oldKeys.push(key);
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            try {
+                const currentData = JSON.parse(localStorage.getItem(currentUserKey));
+                if (Array.isArray(currentData)) {
+                    mergedData = mergedData.concat(currentData);
+                    oldKeys.push(currentUserKey);
+                }
+            } catch(e) {}
+            
+            // 2. Read from IndexedDB
+            try {
+                const idbDataStr = await idbGet(currentUserKey);
+                if (idbDataStr) {
+                    const idbData = JSON.parse(idbDataStr);
+                    if (Array.isArray(idbData)) {
+                        mergedData = mergedData.concat(idbData);
+                    }
+                }
+            } catch(e) {}
+            
+            // 3. Deduplicate
+            const uniqueData = [];
+            const seenIds = new Set();
+            mergedData.forEach(item => {
+                if (!seenIds.has(item.id)) {
+                    seenIds.add(item.id);
+                    uniqueData.push(item);
+                }
+            });
+            
+            userData = uniqueData;
+            
+            // 4. Save safely to IndexedDB
+            await idbSet(currentUserKey, JSON.stringify(userData));
+            
+            // 5. Cleanup localStorage to free quota!
+            oldKeys.forEach(k => localStorage.removeItem(k));
+            
+            renderRecords();
+        });
+
+        const categories = [
+            { id: 'heavy', name: '헤비 아우터', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'outer', name: '아우터', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'long-top', name: '긴팔 상의', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'short-top', name: '반팔 상의', measures: ['총장', '어깨너비', '가슴단면', '소매길이'] },
+            { id: 'long-bottom', name: '긴바지', measures: ['총장', '허리단면', '엉덩이단면', '허벅지단면', '밑위', '밑단단면'] },
+            { id: 'short-bottom', name: '반바지', measures: ['총장', '허리단면', '엉덩이단면', '허벅지단면', '밑위', '밑단단면'] }
+        ];
 
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.getElementById('main-content');
         
-        categories.forEach((cat, index) => {
+        categories.forEach((cat) => {
             const menuWrapper = document.createElement('div');
             menuWrapper.className = 'menu-wrapper';
-            menuWrapper.innerHTML = `
-                <div id="menu-${cat.id}" class="menu-item" onclick="scrollToElement('sec-${cat.id}-hero', 'start')">${cat.name}</div>
-                <div id="submenu-${cat.id}" class="sub-menu"></div>
-            `;
-            sidebar.insertBefore(menuWrapper, sidebar.querySelector('.logout-btn'));
+            menuWrapper.innerHTML = `<div id="menu-${cat.id}" class="menu-item" onclick="scrollToElement('sec-${cat.id}-hero', 'start')">${cat.name}</div><div id="submenu-${cat.id}" class="sub-menu"></div>`;
+            sidebar.insertBefore(menuWrapper, sidebar.querySelector('.backup-group'));
 
             const section = document.createElement('section');
             section.className = 'category-section';
             section.id = `sec-${cat.id}`;
-            section.dataset.menuId = `menu-${cat.id}`;
 
-            let measureHeadersHtml = '';
-            let measureInputsHtml = '';
-            cat.measures.forEach(m => {
-                measureHeadersHtml += `<th>${m}</th>`;
-                measureInputsHtml += `<td><input type="number" class="measure-input" data-label="${m}" placeholder="0"></td>`;
-            });
-            let measureTableHtml = `
-                <div class="measure-table-wrapper">
-                    <table class="measure-table">
-                        <thead><tr>${measureHeadersHtml}</tr></thead>
-                        <tbody><tr>${measureInputsHtml}</tr></tbody>
-                    </table>
+            const gridClass = cat.measures.length === 4 ? 'grid-4' : (cat.measures.length === 6 ? 'grid-6' : 'grid-default');
+            let measureChips = cat.measures.map(m => `
+                <div class="measure-chip">
+                    <span class="chip-label">${m}</span>
+                    <input type="number" class="measure-input" data-label="${m}" placeholder="0" onfocus="showFitPopup(this)">
+                    <span class="inline-fit-label"></span>
                 </div>
-            `;
+            `).join('');
 
+            // 💡 인라인 스타일 교체: height:100% 삭제 -> flex-grow:1; align-items:stretch 추가
             section.innerHTML = `
                 <div class="category-hero" id="sec-${cat.id}-hero">${cat.name}</div>
-                <div class="form-container input-form-box">
-                    
+                <div class="form-container">
                     <div class="layout-top-row">
-                        <div><input type="text" class="clothBrand" placeholder="브랜드"></div>
-                        <div><input type="text" class="clothName" placeholder="옷 이름"></div>
-                        <div>
-                            <button type="button" class="size-select-btn" onclick="togglePopup(this)">착용 사이즈 선택 ▼</button>
-                            <div class="size-popup">${sizePopupHtml}</div>
-                            <input type="hidden" class="selectedSize">
-                        </div>
+                        <div class="floating-input-group"><input type="text" class="clothBrand" placeholder=" "><label>브랜드</label></div>
+                        <div class="floating-input-group"><input type="text" class="clothName" placeholder=" "><label>제품명</label></div>
+                        <div><button type="button" class="size-select-btn" onclick="togglePopup(this)">사이즈</button><div class="size-popup">${generateSizePopupHtml()}</div><input type="hidden" class="selectedSize"></div>
                     </div>
-
                     <div class="layout-bottom-row">
-                        <div class="left-col">
-                            <div class="image-preview" onclick="this.nextElementSibling.click()">
-                                <span>➕ 사진 추가</span><img src="" alt="미리보기">
-                            </div>
-                            <input type="file" class="image-input" accept="image/*" onchange="previewImage(this)">
-                        </div>
+                        <div class="left-col"><div class="image-preview" onclick="this.nextElementSibling.click()"><div style="display:flex; flex-direction:column; align-items:center; gap:8px;"><span style="font-weight:700; color:var(--text-sub); white-space:nowrap;">➕ 사진 추가</span><span style="font-size: 11px; color: var(--color-point); background: var(--bg-input); padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space:nowrap;" onclick="event.stopPropagation(); triggerPaste(this)">📋 클립보드 붙여넣기</span></div><img src=""></div><input type="file" class="image-input" style="display:none;" onchange="previewImage(this)"></div>
                         <div class="right-col">
-                            <div class="right-col-top">${measureTableHtml}</div>
+                            <div class="right-col-top">
+                                <div class="measure-grid ${gridClass}">${measureChips}</div>
+                            </div>
                             <div class="right-col-bottom">
-                                <label>전체적인 느낌</label>
-                                <textarea class="overallReview" placeholder="보온성, 무게감, 핏감 등을 자유롭게 적어주세요."></textarea>
+                                <div class="floating-input-group" style="flex-grow: 1; align-items: stretch;">
+                                    <textarea class="overallReview" placeholder=" "></textarea>
+                                    <label>리뷰를 남겨주세요</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="submit-btn-wrapper">
-                        <button class="submit-btn" onclick="processSaveRecord(this, '${cat.id}')">기록 저장하기</button>
-                    </div>
+                    <div class="submit-btn-wrapper"><button type="button" class="submit-btn" onclick="processSaveRecord(this, '${cat.id}')">기록 보관하기</button></div>
                 </div>
                 <div class="record-list" id="list-${cat.id}"></div>
             `;
-            
             mainContent.appendChild(section);
-
-            if (index < categories.length - 1) {
-                const divider = document.createElement('div');
-                divider.className = 'section-divider';
-                mainContent.appendChild(divider);
-            }
+            mainContent.appendChild(Object.assign(document.createElement('div'), {className: 'section-divider'}));
         });
 
-        function handleLogin() {
-            const name = document.getElementById('login-name').value.trim();
-            const pin = document.getElementById('login-pin').value.trim();
-            if(!name) { alert('이름을 입력해주세요!'); return; }
-            if(pin.length !== 4 || isNaN(pin)) { alert('비밀번호는 숫자 4자리여야 합니다!'); return; }
-            currentUserKey = 'wardrobeUser_' + name + '_' + pin;
-            const savedStr = localStorage.getItem(currentUserKey);
-            userData = savedStr ? JSON.parse(savedStr) : [];
-            document.getElementById('login-overlay').style.display = 'none';
-            renderAllSavedData();
-        }
-
-        function renderAllSavedData() {
-            [...userData].reverse().forEach(record => buildRecordCard(record, false));
-        }
-
-        function buildRecordCard(record, isNewAdd = false) {
-            let savedMeasureHeadersHtml = '';
-            let savedMeasureValuesHtml = '';
-            record.measures.forEach(m => { 
-                savedMeasureHeadersHtml += `<th>${m.label}</th>`;
-                savedMeasureValuesHtml += `<td>${m.value || '-'}</td>`;
-            });
-            let savedMeasureTableHtml = `
-                <div class="measure-table-wrapper">
-                    <table class="measure-table saved-measure-table">
-                        <thead><tr>${savedMeasureHeadersHtml}</tr></thead>
-                        <tbody><tr>${savedMeasureValuesHtml}</tr></tbody>
-                    </table>
-                </div>
-            `;
-
-            const wrapper = document.createElement('div');
-            if(isNewAdd) {
-                wrapper.style.overflow = 'hidden';
-                wrapper.style.transition = 'all 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-                wrapper.style.maxHeight = '0px'; 
-                wrapper.style.opacity = '0';
-                wrapper.style.transform = 'translateY(-30px)'; 
-            }
-
-            const recordCard = document.createElement('div');
-            recordCard.className = 'form-container saved-record-container';
-            recordCard.id = record.id;
+        
+        const dashSection = document.createElement('section');
+        dashSection.className = 'category-section';
+        dashSection.id = 'sec-search';
+        dashSection.innerHTML = `
             
-            // ★ 브랜드, 옷 이름, 사이즈 모두 폰트 크기 29px로 통일 및 색상 모두 하얀색(#ffffff)
-            const brandHtml = record.brand ? `<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.brand}</span>&nbsp;` : '';
-            
-            recordCard.innerHTML = `
-                <button class="delete-btn-x" onclick="processDeleteRecord('${record.id}')">&times;</button>
+            <div class="category-hero" id="sec-search-hero" style="flex: 0 0 auto; margin-top: 0;">🔍 치수 검색</div>
+            <div style="display: flex; gap: 30px; flex-direction: column; align-items: center; width: 100%; max-width: 1200px; padding: 10px 20px 0 20px;">
                 
-                <div class="saved-card-header" style="color: #ffffff; margin-bottom: 20px; padding-left: 5px; line-height: 1.2;">
-                    ${brandHtml}<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.name}</span>&nbsp;<span style="font-size: 29px; font-weight: 800; color: #ffffff;">${record.size}</span>
-                </div>
-
-                <div class="layout-bottom-row">
-                    <div class="left-col">
-                        <div class="image-preview" style="cursor: default; border: 1px solid #454242; background-color: #111111;">
-                            <img src="${record.imgSrc}" alt="옷 사진" style="display: ${record.imgSrc ? 'block' : 'none'}; width: 100%; height: 100%; object-fit: cover;">
+                <div id="search-input-wrapper" style="width: 100%; display: flex; flex-direction: column; min-height: 500px; padding-bottom: 50px;">
+                    <div id="search-columns-up" style="display: flex; gap: 15px; width: 100%; padding: 0;">
+                        <div id="up-cat-placeholder" style="flex: 0 0 130px; min-width: 0;"></div>
+                    </div>
+                    
+                    <div id="search-inputs-row" style="flex: 0 0 auto; display: flex; gap: 15px; width: 100%; padding: 20px 0; z-index: 10;">
+                        <div id="search-cat-container" style="flex: 0 0 130px; display:flex; flex-direction:column; align-items:center; gap:10px; min-width: 0;">
+                            <span style="font-size:15px; font-weight:700; color:var(--text-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:center;">카테고리</span>
+                            <select id="search-category-select" onchange="selectSearchCat(this.value)" style="width: 100%; padding: 16px 10px; border: none; border-radius: 12px; font-size: 18px; background: var(--bg-input); color: var(--text-main); text-align: center; font-weight: 800; outline: none; cursor:pointer;">
+                                <option value="" disabled selected>선택</option>
+                                ${categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div id="search-measure-inputs-container" style="display: flex; gap: 15px; flex: 1;">
+                            <!-- measure inputs go here -->
                         </div>
                     </div>
-                    <div class="right-col">
-                        <div class="right-col-top">${savedMeasureTableHtml}</div>
-                        <div class="right-col-bottom">
-                            <label>전체적인 느낌</label>
-                            <textarea readonly>${record.review || '-'}</textarea>
-                        </div>
+                    
+                    <div id="search-columns-down" style="display: flex; gap: 15px; width: 100%; padding: 0;">
+                        <div id="down-cat-placeholder" style="flex: 0 0 130px; min-width: 0;"></div>
                     </div>
                 </div>
-            `;
 
-            wrapper.appendChild(recordCard);
-            document.getElementById(`list-${record.catId}`).prepend(wrapper);
+            </div>
+        `;
+        mainContent.appendChild(dashSection);
+        
+        const searchMenuWrapper = document.createElement('div');
+        searchMenuWrapper.className = 'menu-item';
+        searchMenuWrapper.innerText = '🔍 치수 검색';
+        searchMenuWrapper.onclick = () => scrollToElement('sec-search-hero', 'start');
+        sidebar.insertBefore(searchMenuWrapper, sidebar.querySelector('.backup-group'));
 
-            const subMenu = document.getElementById(`submenu-${record.catId}`);
-            if(subMenu) {
-                const subMenuItem = document.createElement('div');
-                subMenuItem.className = 'sub-menu-item';
-                subMenuItem.id = `menu-link-${record.id}`; 
-                subMenuItem.innerText = record.name; 
-                subMenuItem.onclick = (e) => { e.stopPropagation(); scrollToElement(record.id, 'center'); };
-                subMenu.prepend(subMenuItem);
-            }
+        let activeSearchCat = null;
+        window.selectSearchCat = function(catId) {
+            activeSearchCat = catId;
+            const cat = categories.find(c => c.id === catId);
+            
+            document.getElementById('search-category-select').value = catId;
+            
+            const upWrapper = document.getElementById('search-columns-up');
+            const inputsContainer = document.getElementById('search-measure-inputs-container');
+            const downWrapper = document.getElementById('search-columns-down');
+            
+            upWrapper.innerHTML = '<div style="flex: 0 0 130px; min-width: 0;"></div>' + cat.measures.map(m => `
+                <div id="up-col-${m}" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; width: 100%; min-width: 0; padding-bottom: 10px;"></div>
+            `).join('');
+            
+            inputsContainer.innerHTML = cat.measures.map(m => `
+                <div style="flex: 1; display:flex; flex-direction:column; align-items:center; gap:10px; min-width: 0;">
+                    <span style="font-size:15px; font-weight:700; color:var(--text-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; text-align:center;">${m}</span>
+                    <input type="number" class="search-measure-val" data-label="${m}" placeholder="0" style="width: 100%; padding: 16px 10px; border: none; border-radius: 12px; font-size: 20px; background: var(--bg-input); color: var(--text-main); text-align: center; outline: none; font-weight: 800;" oninput="runSearch()">
+                </div>
+            `).join('');
+            
+            downWrapper.innerHTML = '<div style="flex: 0 0 130px; min-width: 0;"></div>' + cat.measures.map(m => `
+                <div id="down-col-${m}" style="flex: 1; display: flex; flex-direction: column; gap: 10px; width: 100%; min-width: 0; padding-top: 10px;"></div>
+            `).join('');
+        }
 
-            if(isNewAdd) {
-                void wrapper.offsetWidth; 
-                wrapper.style.maxHeight = '1500px';
-                wrapper.style.opacity = '1';
-                wrapper.style.transform = 'translateY(0)';
-                wrapper.style.marginBottom = '30px'; 
-                setTimeout(() => { wrapper.style.maxHeight = 'none'; wrapper.style.overflow = 'visible'; }, 500);
-            }
+        window.runSearch = function() {
+            if(!activeSearchCat) return;
+            
+            const cat = categories.find(c => c.id === activeSearchCat);
+            cat.measures.forEach(m => {
+                document.getElementById('up-col-' + m).innerHTML = '';
+                document.getElementById('down-col-' + m).innerHTML = '';
+            });
+
+            const inputs = Array.from(document.querySelectorAll('.search-measure-val')).filter(i => i.value !== '');
+            if(inputs.length === 0) return;
+            
+            const renderMiniCard = (r) => `
+                <div class="form-container" style="padding: 10px !important; margin:0; width:100%; max-width: none !important; display:flex; flex-direction:column; gap:8px; cursor:pointer; background: var(--bg-box); min-width: 0;" onclick="scrollToElement('${r.id}', 'center')">
+                    <div style="display:flex; gap:10px; align-items:center; width:100%;">
+                        <div style="width: 40px; height: 40px; border-radius: 6px; overflow: hidden; background: var(--bg-darker); display: ${r.imgSrc ? 'block' : 'none'}; flex-shrink: 0;">
+                            <img src="${r.imgSrc}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="flex: 1; display:flex; flex-direction:column; justify-content:center; min-width: 0;">
+                            <div style="font-size: 11px; color: var(--text-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 100%;">${r.brand || '브랜드'}</div>
+                            <div style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 100%;">${r.name}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:baseline; width:100%; border-top: 1px dashed var(--border-dark); padding-top: 6px;">
+                        <div style="display:flex; align-items:center; gap: 6px; overflow:hidden;">
+                            <div style="font-size: 11px; font-weight: 600; color: var(--text-sub); white-space:nowrap;">${r.matchLabel} 기준</div>
+                            ${r.fitRating ? `<div style="font-size: 10px; padding: 2px 5px; background: var(--bg-main); color: var(--text-main); border-radius: 4px; font-weight: 700; white-space:nowrap;">${r.fitRating}</div>` : ''}
+                        </div>
+                        <div style="font-size: 16px; font-weight: 800; color: var(--color-point); flex-shrink: 0; margin-left: 5px;">${r.searchVal}</div>
+                    </div>
+                </div>`;
+
+            inputs.forEach(activeInput => {
+                const measureLabel = activeInput.dataset.label;
+                const inputVal = parseFloat(activeInput.value);
+                
+                const matches = userData.filter(d => d.catId === activeSearchCat).map(record => {
+                    const m = record.measures.find(x => x.label === measureLabel);
+                    return m && m.value ? { ...record, searchVal: parseFloat(m.value), matchLabel: measureLabel, inputVal: inputVal, fitRating: m.fitRating } : null;
+                }).filter(Boolean);
+                
+                // For UP, we want the largest furthest away (at the top), so sort descending.
+                const upMatches = matches.filter(r => r.searchVal >= inputVal).sort((a,b) => b.searchVal - a.searchVal);
+                // For DOWN, we want the smallest furthest away (at the bottom), so sort descending.
+                // Wait! If we sort descending for downMatches, the largest is at the top (closest to input). This is correct!
+                const downMatches = matches.filter(r => r.searchVal < inputVal).sort((a,b) => b.searchVal - a.searchVal);
+                
+                const upCol = document.getElementById('up-col-' + measureLabel);
+                const downCol = document.getElementById('down-col-' + measureLabel);
+                
+                upMatches.forEach(r => {
+                    const el = document.createElement('div');
+                    el.innerHTML = renderMiniCard(r);
+                    upCol.appendChild(el.firstElementChild);
+                });
+                downMatches.forEach(r => {
+                    const el = document.createElement('div');
+                    el.innerHTML = renderMiniCard(r);
+                    downCol.appendChild(el.firstElementChild);
+                });
+            });
+        }
+
+        function handleLoginEnter(e) { if(e.key==='Enter') handleLogin(); }
+        
+
+        function exportData() {
+            if(userData.length === 0) { alert('백업할 데이터가 없습니다.'); return; }
+            const dataStr = JSON.stringify(userData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = `wardrobe_backup.json`;
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if(confirm(`${imported.length}개의 데이터를 불러오시겠습니까? 현재 데이터와 합쳐집니다.`)) {
+                        userData = [...userData, ...imported];
+                        idbSet(currentUserKey, JSON.stringify(userData));
+                        location.reload();
+                    }
+                } catch(err) { alert('올바른 백업 파일이 아닙니다.'); }
+            };
+            reader.readAsText(file);
         }
 
         function processSaveRecord(btn, catId) {
-            const section = btn.closest('.category-section');
-            const brand = section.querySelector('.clothBrand').value;
-            const name = section.querySelector('.clothName').value;
-            const size = section.querySelector('.selectedSize').value;
-            const overallReview = section.querySelector('.overallReview').value;
-            const imgInput = section.querySelector('.image-input');
-            const imgSrc = imgInput.dataset.imgData || '';
-            if(!name || !size) { alert('옷 이름과 착용 사이즈는 꼭 입력해주세요!'); return; }
-            const measureInputs = section.querySelectorAll('.measure-input');
-            let measuresArray = [];
-            measureInputs.forEach(input => measuresArray.push({ label: input.dataset.label, value: input.value }));
-            const newRecord = { id: 'record-' + Date.now(), catId: catId, brand: brand, name: name, size: size, imgSrc: imgSrc, measures: measuresArray, review: overallReview };
-            userData.push(newRecord);
-            localStorage.setItem(currentUserKey, JSON.stringify(userData));
-            const inputFormBox = section.querySelector('.input-form-box');
-            inputFormBox.style.pointerEvents = 'none'; 
-            inputFormBox.style.transition = 'all 0.35s ease-in';
-            inputFormBox.style.transform = 'translateY(100px) scale(0.95)';
-            inputFormBox.style.opacity = '0';
-            setTimeout(() => {
-                buildRecordCard(newRecord, true); 
-                section.querySelector('.clothBrand').value = '';
-                section.querySelector('.clothName').value = ''; 
-                section.querySelector('.overallReview').value = '';
-                section.querySelector('.selectedSize').value = '';
-                measureInputs.forEach(input => input.value = '');
-                const sizeBtn = section.querySelector('.size-select-btn');
-                sizeBtn.innerText = '착용 사이즈 선택 ▼'; sizeBtn.style.color = '#555555';
-                imgInput.value = ''; delete imgInput.dataset.imgData;
-                const previewImg = section.querySelector('.image-preview img');
-                const previewSpan = section.querySelector('.image-preview span');
-                previewImg.src = ''; previewImg.style.display = 'none';
-                previewSpan.style.display = 'block';
-                inputFormBox.style.transition = 'none';
-                inputFormBox.style.transform = 'translateY(-50px) scale(0.98)'; 
-                void inputFormBox.offsetWidth;
-                inputFormBox.style.transition = 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
-                inputFormBox.style.transform = 'translateY(0) scale(1)';
-                inputFormBox.style.opacity = '1';
-                inputFormBox.style.pointerEvents = 'auto'; 
-            }, 350); 
-        }
-
-        function processDeleteRecord(recordId) {
-            if(confirm('삭제하시겠습니까?')) {
-                userData = userData.filter(rec => rec.id !== recordId);
-                localStorage.setItem(currentUserKey, JSON.stringify(userData));
-                const recordEl = document.getElementById(recordId);
-                if(recordEl) {
-                    const wrapper = recordEl.parentElement;
-                    wrapper.style.transition = 'all 0.4s';
-                    wrapper.style.opacity = '0';
-                    wrapper.style.maxHeight = '0px'; 
-                    setTimeout(() => wrapper.remove(), 400);
+            try {
+                const sec = btn.closest('.category-section');
+                const name = sec.querySelector('.clothName').value;
+                const size = sec.querySelector('.selectedSize').value;
+                if(!name || !size) { alert('제품명과 사이즈는 필수입니다!'); return; }
+                
+                let imgSrc = '';
+                const imgInput = sec.querySelector('.image-input');
+                if(imgInput && imgInput.dataset.imgData) { imgSrc = imgInput.dataset.imgData; }
+                
+                const rec = { 
+                    id: 'rec-' + Date.now(), 
+                    catId, 
+                    brand: sec.querySelector('.clothBrand').value, 
+                    name, 
+                    size, 
+                    imgSrc: imgSrc, 
+                    review: sec.querySelector('.overallReview').value, 
+                    measures: Array.from(sec.querySelectorAll('.measure-input')).map(i => ({ label: i.dataset.label, value: i.value, fitRating: i.dataset.fitRating })) 
+                };
+                
+                userData.push(rec); 
+                idbSet(currentUserKey, JSON.stringify(userData)); 
+                
+                renderSingleRecord(rec, true);
+                
+                sec.querySelector('.clothBrand').value = '';
+                sec.querySelector('.clothName').value = '';
+                sec.querySelector('.selectedSize').value = '';
+                sec.querySelector('.size-select-btn').innerText = '사이즈';
+                sec.querySelector('.size-select-btn').style.color = 'var(--text-placeholder)';
+                
+                if(imgInput) {
+                    imgInput.value = '';
+                    imgInput.dataset.imgData = '';
                 }
-                const menuEl = document.getElementById('menu-link-' + recordId);
-                if(menuEl) menuEl.remove();
+                const imgPreview = sec.querySelector('img');
+                if(imgPreview) {
+                    imgPreview.style.display = 'none';
+                    imgPreview.src = '';
+                }
+                const imgSpan = sec.querySelector('.image-preview span');
+                if(imgSpan) { imgSpan.style.display = 'block'; }
+                
+                sec.querySelector('.overallReview').value = '';
+                sec.querySelectorAll('.measure-input').forEach(i => {
+                    i.value = '';
+                    i.dataset.fitRating = '';
+                    i.nextElementSibling.innerText = '';
+                });
+            } catch(err) {
+                console.error(err);
+                alert('기록 보관 중 오류가 발생했습니다: ' + err.message);
             }
         }
 
-        function scrollToElement(targetId, blockPos = 'start') {
-            const el = document.getElementById(targetId);
-            if(el) el.scrollIntoView({ behavior: 'smooth', block: blockPos });
-        }
-
-        function togglePopup(btn) {
-            const popup = btn.nextElementSibling;
-            document.querySelectorAll('.size-popup').forEach(p => { if(p !== popup) p.classList.remove('show'); });
-            popup.classList.toggle('show');
-        }
-
-        function selectSize(element, size) {
-            const popup = element.closest('.size-popup');
-            const btn = popup.previousElementSibling;
-            const hiddenInput = popup.nextElementSibling;
-            btn.innerText = `[ ${size} ] 선택됨`;
-            btn.style.color = '#ffffff'; // 선택된 텍스트도 하얀색
-            hiddenInput.value = size;
-            popup.classList.remove('show');
-            const customInput = popup.querySelector('.custom-size-input');
-            if(customInput) customInput.classList.remove('show');
-        }
-
-        function toggleCustomSize(btn) {
-            const input = btn.nextElementSibling;
-            btn.style.display = 'none';
-            input.classList.add('show');
-            input.focus();
-        }
-
-        function handleCustomInput(e, input) {
-            if(e.key === 'Enter') {
-                e.preventDefault();
-                if(input.value.trim() !== '') selectSize(input, input.value.trim());
+        function renderSingleRecord(r, isNew = false) {
+            const list = document.getElementById('list-' + r.catId);
+            if(!list) return;
+            
+            const card = document.createElement('div');
+            card.className = 'form-container saved-record-container';
+            card.id = r.id;
+            
+            if(isNew) {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(-40px)';
+                card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            }
+            
+            // 💡 인라인 스타일 교체: margin-top:15px; height:100% 삭제 -> flex-grow:1; align-items:stretch 추가
+            card.innerHTML = `
+                <button class="delete-btn-x" onclick="deleteRecord('${r.id}', this)">&times;</button>
+                <button class="edit-btn-icon" onclick="toggleEditRecord('${r.id}', this)" style="position:absolute; top:20px; right:55px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--text-sub); padding:0; line-height:1;">✏️</button>
+                <div style="font-size:22px; font-weight:400; margin-bottom:15px; color:var(--text-main);">
+                    ${r.brand ? `<span style="font-size:16px;">${r.brand}</span> ` : ''}${r.name} <span style="font-size:15px; color:var(--text-sub);">(${r.size})</span>
+                </div>
+                <div class="layout-bottom-row">
+                    <div class="left-col">
+                        <div class="image-preview" style="cursor:default;">
+                            <img src="${r.imgSrc}" style="display:${r.imgSrc ? 'block' : 'none'}">
+                        </div>
+                    </div>
+                    <div class="right-col">
+                        <div class="measure-grid ${r.measures.length === 4 ? 'grid-4' : (r.measures.length === 6 ? 'grid-6' : 'grid-default')}">
+                            ${r.measures.map(m => `<div class="measure-chip saved-chip"><span class="chip-label">${m.label}</span><span class="val-text">${m.value || '-'}</span>${m.fitRating ? `<span class="fit-text">${m.fitRating}</span>` : ''}</div>`).join('')}
+                        </div>
+                        <div class="review-overlay">
+                            <div class="review-overlay-label">작성한 리뷰</div>
+                            <textarea class="review-overlay-content" readonly>${r.review || '리뷰가 없습니다.'}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            list.prepend(card);
+            
+            const sm = document.getElementById('submenu-' + r.catId);
+            const smi = document.createElement('div'); 
+            smi.className = 'sub-menu-item';
+            smi.innerText = r.name;
+            smi.id = 'menuitem-' + r.id;
+            smi.onclick = (e) => { e.stopPropagation(); scrollToElement(r.id, 'center'); };
+            sm.prepend(smi);
+            
+            if(isNew) {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                    scrollToElement(r.id, 'center');
+                }, 50);
             }
         }
 
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
+        function renderRecords() {
+            categories.forEach(c => {
+                const list = document.getElementById('list-' + c.id);
+                if(list) list.innerHTML = '';
+                const sm = document.getElementById('submenu-' + c.id);
+                if(sm) sm.innerHTML = '';
+            });
+            userData.forEach(r => renderSingleRecord(r, false));
+        }
+
+        function generateSizePopupHtml() { return [['S','M','L','XL'],['0','1','2','3'],['95','100','105','110'],['44','46','48','50','52']].map(r => `<div style="display:flex; gap:6px;">${r.map(s => `<div class="size-item" onclick="selectSize(this, '${s}')">${s}</div>`).join('')}</div>`).join('') + `<div style="margin-top:4px; display:flex; gap:6px;"><div class="size-item" style="background:var(--color-point); color:var(--bg-main);" onclick="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.focus();">직접 입력</div><input type="text" style="display:none; width:100%; padding:10px; border:1px solid var(--color-point); border-radius:8px; outline:none; background:var(--bg-input); color:var(--text-main); font-weight:700; text-align:center;" onkeypress="if(event.key==='Enter') selectSize(this, this.value)"></div>`; }
+        function selectSize(el, s) { const p = el.closest('.size-popup'); p.previousElementSibling.innerText = s; p.previousElementSibling.style.color = 'var(--text-main)'; p.previousElementSibling.style.opacity = '1'; p.nextElementSibling.value = s; p.classList.remove('show'); }
+        
+        function showFitPopup(inputEl) {
+            document.querySelectorAll('.size-popup').forEach(p => p.classList.remove('show'));
+            activeMeasureInput = inputEl;
+            const popup = document.getElementById('global-fit-popup');
+            const label = inputEl.dataset.label;
+            
+            let btnsHtml = '';
+            for(let i=1; i<=7; i++) {
+                let subLabel = '';
+                if(['총장','밑위','소매길이'].includes(label)) {
+                    if(i===1) subLabel = '너무 짧음';
+                    if(i===2||i===3) subLabel = '조금 짧음';
+                    if(i===4) subLabel = '적당함';
+                    if(i===5||i===6) subLabel = '조금 김';
+                    if(i===7) subLabel = '너무 김';
+                } else if(label === '허벅지단면' || label === '밑단단면') {
+                    if(i===1) subLabel = '너무 좁음';
+                    if(i===2||i===3) subLabel = '조금 좁음';
+                    if(i===4) subLabel = '적당함';
+                    if(i===5||i===6) subLabel = '조금 넓음';
+                    if(i===7) subLabel = '너무 넓음';
+                } else {
+                    if(i===1) subLabel = '너무 작음';
+                    if(i===2||i===3) subLabel = '조금 작음';
+                    if(i===4) subLabel = '적당함';
+                    if(i===5||i===6) subLabel = '조금 큼';
+                    if(i===7) subLabel = '너무 큼';
+                }
+                btnsHtml += `<div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                    <button type="button" class="fit-btn" style="width:34px; height:34px; padding:0; display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px solid var(--border-main); background:var(--bg-input); font-weight:700; cursor:pointer; color:var(--text-main);" onclick="selectFitValue(this)">${i}</button>
+                    <span style="font-size:10px; color:var(--text-sub); white-space:nowrap; opacity:${[1,4,7].includes(i) ? '1' : '0'};">${subLabel}</span>
+                </div>`;
+            }
+            document.getElementById('fit-btn-group').innerHTML = btnsHtml;
+            const r = inputEl.getBoundingClientRect();
+            popup.style.top = (r.bottom + 10) + 'px'; 
+            popup.style.left = (r.left + (r.width/2) - 170) + 'px'; 
+            popup.classList.add('show');
+        }
+        
+        function selectFitValue(btn) { 
+            const textValue = btn.nextElementSibling.innerText;
+            activeMeasureInput.dataset.fitRating = textValue; 
+            activeMeasureInput.nextElementSibling.innerText = textValue; 
+            document.getElementById('global-fit-popup').classList.remove('show'); 
+        }
+        
+        function deleteRecord(id, btn) { 
+            userData = userData.filter(u => u.id !== id); 
+            idbSet(currentUserKey, JSON.stringify(userData)); 
+            
+            const card = btn.closest('.saved-record-container');
+            card.style.transition = 'all 0.3s ease';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9)';
+            
+            const menuItem = document.getElementById('menuitem-' + id);
+            if(menuItem) menuItem.remove();
+            
+            setTimeout(() => card.remove(), 300);
+        }
+        
+        function scrollToElement(id, pos) { const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior:'smooth', block:pos }); }
+        function togglePopup(btn) { document.getElementById('global-fit-popup').classList.remove('show'); btn.nextElementSibling.classList.toggle('show'); }
+        function previewImage(i) {
+            if(i.files && i.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewBox = input.previousElementSibling;
-                    const img = previewBox.querySelector('img');
-                    const text = previewBox.querySelector('span');
-                    img.src = e.target.result; img.style.display = 'block'; text.style.display = 'none';
-                    input.dataset.imgData = e.target.result; 
-                }
-                reader.readAsDataURL(input.files[0]);
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 500;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+                        
+                        i.previousElementSibling.querySelector('img').src = dataUrl;
+                        i.previousElementSibling.querySelector('img').style.display = 'block';
+                        i.previousElementSibling.firstElementChild.style.display = 'none';
+                        i.dataset.imgData = dataUrl;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(i.files[0]);
             }
         }
-    </script>
+        document.addEventListener('click', e => { if(!e.target.closest('.global-fit-popup') && !e.target.classList.contains('measure-input')) document.getElementById('global-fit-popup').classList.remove('show'); if(!e.target.closest('.size-popup') && !e.target.classList.contains('size-select-btn')) document.querySelectorAll('.size-popup').forEach(p=>p.classList.remove('show')); });
+
+        document.getElementById('main-content').addEventListener('scroll', () => {
+            const popup = document.getElementById('global-fit-popup');
+            if (popup.classList.contains('show') && activeMeasureInput) {
+                const r = activeMeasureInput.getBoundingClientRect();
+                popup.style.top = (r.bottom + 10) + 'px';
+                popup.style.left = (r.left + (r.width/2) - 150) + 'px';
+            }
+        });
+    
+        function toggleEditRecord(id, btn) {
+            const card = document.getElementById(id);
+            if (!card) return;
+            const r = userData.find(u => u.id === id);
+            if (!r) return;
+
+            if (btn.innerText === '✏️') {
+                btn.innerText = '💾';
+                
+                const titleDiv = card.querySelector('div[style*="font-size:22px"]') || card.querySelector('div[style*="font-size: 22px"]');
+                if (titleDiv) {
+                    titleDiv.innerHTML = `
+                        <input type="text" class="edit-brand" placeholder="브랜드" value="${r.brand || ''}" style="width:80px; padding:4px; font-size:16px; border-radius:4px; border:1px solid var(--border-main); background:var(--bg-input);">
+                        <input type="text" class="edit-name" placeholder="옷 이름" value="${r.name}" style="width:140px; padding:4px; font-size:18px; border-radius:4px; border:1px solid var(--border-main); background:var(--bg-input);">
+                        <input type="text" class="edit-size" placeholder="사이즈" value="${r.size}" style="width:60px; padding:4px; font-size:14px; border-radius:4px; border:1px solid var(--border-main); background:var(--bg-input);">
+                    `;
+                }
+
+                const measureChips = card.querySelectorAll('.measure-chip');
+                measureChips.forEach(chip => {
+                    const labelSpan = chip.querySelector('.chip-label');
+                    if(!labelSpan) return;
+                    const label = labelSpan.innerText;
+                    const m = r.measures.find(x => x.label === label);
+                    if(m) {
+                        chip.innerHTML = `
+                            <span class="chip-label" style="font-size:12px; font-weight:600; color:var(--text-sub);">${label}</span>
+                            <input type="number" class="edit-measure-val" data-label="${label}" data-fit-rating="${m.fitRating || ''}" value="${m.value}" style="width:90%; text-align:center; padding:2px; font-size:18px; font-weight:700; border-radius:4px; border:1px solid var(--border-main); color:var(--color-point); background:var(--bg-input); margin-top:2px;">
+                            <span class="fit-text" style="font-size:12px; margin-top:4px; font-weight:600; color:var(--text-sub); cursor:pointer; text-decoration:underline;" onclick="showFitPopup(this.previousElementSibling)">${m.fitRating || '핏 선택'}</span>
+                        `;
+                    }
+                });
+            } else {
+                btn.innerText = '✏️';
+                
+                const b = card.querySelector('.edit-brand');
+                if(b) r.brand = b.value;
+                const n = card.querySelector('.edit-name');
+                if(n) r.name = n.value;
+                const s = card.querySelector('.edit-size');
+                if(s) r.size = s.value;
+
+                const inputs = card.querySelectorAll('.edit-measure-val');
+                inputs.forEach(inp => {
+                    const m = r.measures.find(x => x.label === inp.dataset.label);
+                    if(m) {
+                        m.value = inp.value;
+                        m.fitRating = inp.dataset.fitRating || '';
+                    }
+                });
+
+                idbSet(currentUserKey, JSON.stringify(userData));
+                
+                // Re-render everything to update the card properly
+                renderRecords();
+            }
+        }
+</script>
 </body>
 </html>
